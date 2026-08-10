@@ -1,0 +1,80 @@
+name: TweetAPI
+description: >-
+  Independent third-party REST API for public Twitter/X data, built for developers, researchers, startups, agencies, and
+  analytics teams. Offers user profiles, tweets, search, lists, communities, Spaces, posting/engagement, and DMs, plus a
+  hosted MCP server and llms.txt for agent access. Not affiliated with X Corp.
+url: https://tweetapi.apievangelist.com/apis.yml
+created: '2026-08-10'
+modified: '2026-08-10'
+specificationVersion: '0.21'
+tags:
+  - twitter
+  - x
+  - social-media
+  - social-data
+  - search
+  - analytics
+  - research
+  - developer-tools
+  - mcp
+  - agent-native
+  - llms-txt
+  - rest-api
+apis:
+  - name: TweetAPI tw-v2 REST API
+    description: >-
+      REST API for public Twitter/X data with X-API-Key auth, JSON responses, and 76 documented endpoints across users,
+      tweets, posting, interactions, lists, profiles, communities, Spaces, search, auth, X Chat, and legacy DMs.
+    humanURL: https://tweetapi.com/docs/getting-started/overview
+    baseURL: https://api.tweetapi.com/tw-v2
+    tags:
+      - twitter
+      - x
+      - social-media
+      - social-data
+      - search
+      - analytics
+      - research
+      - developer-tools
+      - mcp
+      - agent-native
+      - llms-txt
+      - rest-api
+    properties:
+      - type: Documentation
+        url: https://tweetapi.com/docs/getting-started/overview
+      - type: LLMsTxt
+        url: https://tweetapi.com/llms.txt
+  - name: TweetAPI Hosted MCP Server
+    description: >-
+      Hosted remote HTTP MCP server providing current TweetAPI docs and read-only live public-data tools. Uses OAuth via
+      dashboard authorization (tweetapi:read); does not expose posting, engagement, account-secret, or DM operations.
+      Documented for Codex, Claude Code, and Cursor.
+    humanURL: https://tweetapi.com/mcp
+    baseURL: https://mcp.tweetapi.com/mcp
+    tags:
+      - twitter
+      - x
+      - social-media
+      - social-data
+      - search
+      - analytics
+      - research
+      - developer-tools
+      - mcp
+      - agent-native
+      - llms-txt
+      - rest-api
+    properties:
+      - type: MCPServer
+        url: https://mcp.tweetapi.com/mcp
+      - type: Documentation
+        url: https://tweetapi.com/docs/getting-started/agents
+maintainers:
+  - FN: TweetAPI
+    url: https://tweetapi.com
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 95
+  at: '2026-08-10T15:07:31.972Z'
