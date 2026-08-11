@@ -1,0 +1,56 @@
+generated: '2026-08-11'
+method: searched
+source: live probes of /.well-known/* on every apis.yml host
+summary:
+  hosts_probed: 3
+  paths_probed: 25
+  documents_found: 2
+  note: >-
+    Two real documents served: RFC 8414 OAuth authorization-server metadata on the website host and
+    RFC 9728 OAuth protected-resource metadata for the hosted MCP server. Both are the discovery
+    surface behind the MCP OAuth flow. No security.txt, no api-catalog, no ai-plugin, no agent card.
+hosts:
+  - host: https://tweetapi.com
+    documents:
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        content_type: application/json
+        file: tweetapi-oauth-authorization-server.json
+        spec: RFC 8414
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-protected-resource, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+  - host: https://api.tweetapi.com
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/oauth-protected-resource, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}
+  - host: https://mcp.tweetapi.com
+    documents:
+      - path: /.well-known/oauth-protected-resource/mcp
+        status: 200
+        content_type: application/json
+        file: tweetapi-oauth-protected-resource.json
+        spec: RFC 9728
+        note: >-
+          Advertised by the WWW-Authenticate challenge on POST https://mcp.tweetapi.com/mcp. The
+          unsuffixed /.well-known/oauth-protected-resource path 404s; only the resource-suffixed
+          form is served.
+      - {path: /.well-known/oauth-protected-resource, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/oauth-authorization-server/mcp, status: 404}
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /.well-known/agent-card.json, status: 404}
+      - {path: /.well-known/agent.json, status: 404}

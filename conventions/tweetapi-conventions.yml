@@ -1,0 +1,102 @@
+generated: '2026-08-11'
+method: searched
+source: https://tweetapi.com/ai-docs-v2.txt
+corroborating_sources:
+  - https://tweetapi.com/docs/getting-started/overview
+  - https://tweetapi.com/llms.txt
+base_url: https://api.tweetapi.com/tw-v2
+authentication:
+  style: api-key-header
+  header: X-API-Key
+  scoped: false
+  see_also: authentication/tweetapi-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    No idempotency key, no request-id de-duplication, and no documented retry-safety contract on any
+    of the write endpoints (create-post, reply-post, retweet, like-post, follow, send-dm,
+    list/add-member, community post/quote/reply). A dropped response on POST
+    /tw-v2/interaction/create-post cannot be safely retried — a retry may duplicate the tweet. This
+    is the highest-value single fix available to this provider for agent readiness.
+  no_pointer: >-
+    Deliberately NOT wired as type Idempotency in apis.yml. There is nothing to point at.
+pagination:
+  style: cursor
+  request_param: cursor
+  response_field: cursor
+  opaque: true
+  termination: absent or empty cursor means the end of the collection
+  page_size_params: [count, limit]
+  endpoints_with_cursor: 27
+  note: >-
+    Cursor values are opaque strings. Some endpoints require the cursor to be seeded from another
+    call (the DM inbox timelines require a cursor obtained from inbox-initial-state). Each page is a
+    separately billed request, and the provider's own agent skill instructs agents not to
+    auto-paginate.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: false
+request_tracing:
+  request_id_header: null
+  note: No correlation or request-id header is documented on requests or responses.
+versioning:
+  scheme: uri-path
+  current: tw-v2
+  note: >-
+    The version is a path segment on the base URL (https://api.tweetapi.com/tw-v2). A prior v1
+    generation is visible in endpoint naming (user/followers-v1 vs user/followers-v2 in the docs
+    navigation) but no version policy, no deprecation policy and no Sunset/Deprecation header
+    support are published.
+  see_also: lifecycle/tweetapi-lifecycle.yml
+response_envelope:
+  media_type: application/json
+  success: 'documented as wrapped in a "data" object'
+  error: '{"statusCode": <int>, "message": "<string>"}'
+  timestamps: ISO 8601 (e.g. 2025-10-05T14:30:00.000Z)
+  identifiers: strings (Twitter/X snowflake IDs)
+  see_also: errors/tweetapi-problem-types.yml
+  note: >-
+    The published shared-object notes document one cross-cutting normalization: any endpoint that
+    returns a normalized Tweet object may carry reactionContext, where a reaction post is returned
+    as a quote tweet (type "quote") with reactionContext.isReaction true, and normal tweets return
+    reactionContext null. Target metadata fields may be null when upstream data is unavailable.
+rate_limit_signaling:
+  headers: none
+  status_code: 429
+  retry_after: false
+  note: >-
+    Explicitly stated by the provider: tw-v2 endpoints do not return Retry-After or X-RateLimit-*
+    headers. See rate-limits/tweetapi-rate-limits.yml.
+content_negotiation:
+  request: application/json on POST bodies; query-string parameters on GET
+  response: application/json only
+  formats: [json]
+webhooks:
+  supported: false
+  note: >-
+    No webhook, callback, streaming or event surface is published. The DM update path is explicit
+    polling (GET /tw-v2/interaction/dm-user-updates with a cursor). This is why no asyncapi/ artifact
+    exists in this repo — there is no event surface to describe, and fabricating one would be wrong.
+bulk_operations:
+  supported: true
+  note: >-
+    Batch lookups exist on identity endpoints — user/by-usernames and user/by-ids accept up to 50
+    comma-separated values, tweet/details-by-ids accepts an id list, and
+    interaction/dm-permissions and xchat/can-dm accept recipient id lists.
+proxying:
+  parameter: proxy
+  format: host:port@user:pass
+  endpoints: 43
+  note: >-
+    An unusual convention worth flagging: account-authorized endpoints accept a caller-supplied
+    upstream proxy credential as a request parameter. It is optional on every endpoint that accepts
+    it.
+see_also:
+  - errors/tweetapi-problem-types.yml
+  - rate-limits/tweetapi-rate-limits.yml
+  - authentication/tweetapi-authentication.yml
+  - lifecycle/tweetapi-lifecycle.yml

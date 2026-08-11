@@ -1,0 +1,65 @@
+generated: '2026-08-11'
+method: searched
+source: https://tweetapi.com/docs/getting-started/overview
+corroborating_source: https://tweetapi.com/ai-docs-v2.txt
+format: custom-json
+rfc9457: false
+envelope:
+  media_type: application/json
+  shape: '{"statusCode": <int>, "message": "<string>"}'
+  fields:
+    - {name: statusCode, type: integer, description: HTTP status code repeated in the body}
+    - {name: message, type: string, description: Human-readable failure reason}
+  note: >-
+    Not RFC 9457 problem+json — no type URI, no title/detail/instance, no problem registry, and the
+    response is served as application/json rather than application/problem+json. The published
+    "ADDITIONAL INFORMATION" section of ai-docs-v2.txt describes errors as an "error object with code
+    and message", while the docs overview and live responses show the flat statusCode/message shape;
+    the live shape is recorded here as authoritative.
+observed:
+  - request: 'GET https://api.tweetapi.com/tw-v2/openapi.json'
+    status: 401
+    body: '{"statusCode":401,"message":"No API key provided"}'
+    fetched: '2026-08-11'
+  - request: 'GET https://api.tweetapi.com/openapi.json'
+    status: 404
+    body: '{"statusCode":404,"message":"Not found"}'
+    fetched: '2026-08-11'
+problems:
+  - status: 400
+    code: BAD_REQUEST
+    title: Bad Request
+    detail: Invalid parameters
+    remediation: Check required parameter names, types and value formats against the endpoint reference.
+  - status: 401
+    code: UNAUTHORIZED
+    title: Unauthorized
+    detail: Invalid API key
+    remediation: >-
+      Send a valid key in the X-API-Key header. A missing key returns
+      {"statusCode":401,"message":"No API key provided"}.
+  - status: 404
+    code: NOT_FOUND
+    title: Not Found
+    detail: Resource doesn't exist
+    remediation: Verify the path and the identifier; deleted or protected Twitter/X resources also surface as 404.
+  - status: 429
+    code: RATE_LIMIT
+    title: Too Many Requests
+    detail: >-
+      Ambiguous by design — indicates either plan request-allowance exhaustion or the per-minute
+      ceiling. No Retry-After or X-RateLimit-* header accompanies it.
+    remediation: >-
+      Inspect the message string before retrying. Back off with bounds and lower concurrency for a
+      per-minute limit; upgrade the plan or wait for the next period for allowance exhaustion.
+    see_also: rate-limits/tweetapi-rate-limits.yml
+  - status: 500
+    code: INTERNAL_ERROR
+    title: Internal Server Error
+    detail: Unhandled server-side failure.
+    remediation: Retry with backoff; contact support via https://t.me/tweetapi if persistent.
+gaps:
+  - No machine-resolvable error type URIs (no RFC 9457 type registry)
+  - No error code enum published per endpoint
+  - No 403 semantics published despite account-authorized endpoints that can be refused upstream by X
+  - 429 conflates two distinct exhaustion conditions with no header to disambiguate

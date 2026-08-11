@@ -1,0 +1,1754 @@
+# TweetAPI v2 Complete API Documentation for AI/LLM
+Generated: 2026-07-29
+Version: 2.0
+Total Endpoints: 76
+
+================================================
+QUICK REFERENCE
+================================================
+
+Base URL: https://api.tweetapi.com/tw-v2
+Authentication: All requests require X-API-Key header
+Plan Limits: Free trial accounts initialize at 10 requests/minute. Paid, private, legacy, and custom limits are subscription-specific. A 429 response can mean that the request allowance or per-minute limit was exceeded; inspect its message before retrying. TweetAPI's tw-v2 endpoints do not currently return Retry-After or X-RateLimit-* headers.
+
+================================================
+AUTHENTICATION
+================================================
+
+All API requests require an API key in the X-API-Key header:
+
+curl -H "X-API-Key: YOUR_API_KEY" https://api.tweetapi.com/tw-v2/[endpoint]
+
+For authenticated user actions (posting, liking, following, DMs), you also need:
+- authToken: Account authentication token (auth_token cookie value)
+- ct0: CSRF token (ct0 cookie value) - required for X Chat/DM endpoints
+- proxy (optional): Proxy in format 'host:port@user:pass'
+
+================================================
+SHARED TWEET OBJECT NOTES
+================================================
+
+Endpoints that return normalized Tweet objects may include `reactionContext`.
+Reaction posts are returned as quote tweets (`type: "quote"`) with `reactionContext.isReaction === true`.
+Normal tweets and normal quote tweets return `reactionContext: null`.
+
+Shape:
+{
+  "reactionContext": {
+    "isReaction": true,
+    "targetTweetId": "2000000000000000001",
+    "targetTweetUrl": "https://x.com/sample_user_00001/status/2000000000000000001",
+    "targetAuthor": {
+      "id": "1000000000000000001",
+      "username": "sample_user_00001",
+      "name": "Sample User 00001",
+      "avatar": "https://example.com/images/sample-avatar-00001.jpg",
+      "isBlueVerified": true
+    }
+  }
+}
+
+If upstream marks a tweet as a reaction but target metadata is unavailable, `targetTweetId`, `targetTweetUrl`, and `targetAuthor` may be null.
+
+================================================
+ENDPOINTS BY CATEGORY
+================================================
+
+USER: 16 endpoints
+TWEET: 5 endpoints
+POST: 6 endpoints
+INTERACTION: 10 endpoints
+LIST: 7 endpoints
+PROFILE: 3 endpoints
+COMMUNITY: 12 endpoints
+SPACE: 2 endpoints
+SEARCH: 1 endpoints
+AUTH: 1 endpoints
+X CHAT (Encrypted DMs): 5 endpoints
+UNENCRYPTED DM (Legacy): 8 endpoints
+
+================================================
+DETAILED ENDPOINT DOCUMENTATION
+================================================
+
+
+================================================================================
+USER ENDPOINTS
+================================================================================
+
+### GET /tw-v2/user/by-username
+
+**Description:**
+Retrieve comprehensive user profile information using a platform username. Returns detailed user data including statistics, verification status, and profile metadata.
+
+**Parameters:**
+- username (string, required): platform username without @ symbol (e.g., 'sample_user_96991')
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/by-username?username=sample_user_96991" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/by-usernames
+
+**Description:**
+Retrieve comprehensive user profile information for multiple users in a single request using their platform usernames. Returns detailed user data including statistics, verification status, and profile metadata for up to 50 users at once.
+
+**Parameters:**
+- usernames (string, required): Comma-separated list of platform usernames without @ symbol (maximum 50 usernames per request). The @ symbol is automatically stripped if provided.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/by-usernames?usernames=sample_user_96991,sample_user_59576,sample_user_11511" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/by-id
+
+**Description:**
+Retrieve comprehensive user profile information using a platform user ID. Returns detailed user data including statistics, verification status, and profile metadata.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/by-id?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/by-ids
+
+**Description:**
+Retrieve comprehensive user profile information for multiple users in a single request using their platform user IDs. Returns detailed user data including statistics, verification status, and profile metadata for up to 50 users at once.
+
+**Parameters:**
+- userIds (string, required): Comma-separated list of platform user IDs to retrieve (maximum 50 IDs per request).
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/by-ids?userIds=10017528,123456789" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/tweets
+
+**Description:**
+Retrieve tweets posted by a specific user. Returns a paginated timeline of original tweets (no replies).
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/tweets?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/tweets-and-replies
+
+**Description:**
+Retrieve tweets and replies posted by a specific user. Returns a paginated timeline including both original tweets and replies.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/tweets-and-replies?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/following
+
+**Description:**
+Get a paginated list of users that the specified account is following. Returns user objects with complete profile information.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/following?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/followers
+
+**Description:**
+Get a paginated list of users following the specified account. Returns user objects with complete profile information.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/followers?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/verified-followers
+
+**Description:**
+Get a paginated list of users following the specified account. Returns user objects with complete profile information.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/verified-followers?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/subscriptions
+
+**Description:**
+Get a list of accounts that the user has subscribed to. Includes Premium subscribers and Super Followers.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/subscriptions?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/following-list
+
+**Description:**
+Get a paginated list of users that the specified account is following. Returns user objects with complete profile information.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- count (string, optional): Number of results to return per page (max: 100, default: 20)
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/following-list?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/followers-list
+
+**Description:**
+Get a paginated list of users following the specified account. Returns user objects with complete profile information.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- count (string, optional): Number of results to return per page (max: 100, default: 20)
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/followers-list?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/following-ids
+
+**Description:**
+Get a paginated list of users that the specified account is following. Returns user objects with complete profile information.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- count (string, optional): Number of results to return per page (max: 100, default: 20)
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/following-ids?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/followers-ids
+
+**Description:**
+Get a paginated list of users following the specified account. Returns user objects with complete profile information.
+
+**Parameters:**
+- userId (string, required): Unique platform user ID (e.g., '10017528')
+- count (string, optional): Number of results to return per page (max: 100, default: 20)
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/followers-ids?userId=10093010" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/friendship
+
+**Description:**
+Check if a follow relationship exists between two users.
+
+**Parameters:**
+- subjectId (string, required): The user ID of the subject user (the follower)
+- targetId (string, required): The user ID of the target user (the one being followed)
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/friendship?subjectId=10017528&targetId=123456789" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/user/about-account
+
+**Description:**
+Retrieve detailed account information for a user including location, verification details, username history, affiliate relationships, and account creation source.
+
+**Parameters:**
+- username (string, required): platform username without @ symbol (e.g., 'sample_user_96991')
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/user/about-account?username=sample_user_96991" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+
+================================================================================
+TWEET ENDPOINTS
+================================================================================
+
+### GET /tw-v2/tweet/details
+
+**Description:**
+Get detailed information about a specific tweet including full metadata, engagement metrics, conversation context, and attached X Article content.
+
+**Parameters:**
+- tweetId (string, required): Unique tweet/post ID
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+- sortBy (string, optional): Sort order for conversation replies (Relevance, Recency, Likes). Default: Relevance
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/tweet/details?tweetId=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/tweet/details-by-ids
+
+**Description:**
+Retrieve detailed information for multiple tweets in a single request. Returns comprehensive tweet data including author information, engagement metrics, media attachments, and metadata for up to 200 tweets at once.
+
+**Parameters:**
+- ids (string, required): Comma-separated list of tweet IDs to retrieve (maximum 200 IDs per request)
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/tweet/details-by-ids?ids=2002171750977445519,2001085712943977436,2001390983706415851" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/tweet/retweets
+
+**Description:**
+Retrieve users who retweeted a specific tweet. Returns a paginated list of retweets with user information.
+
+**Parameters:**
+- tweetId (string, required): Unique tweet/post ID
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/tweet/retweets?tweetId=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/tweet/quotes
+
+**Description:**
+Retrieve quote tweets for a specific tweet. Returns tweets that quote the original tweet with additional commentary.
+
+**Parameters:**
+- tweetId (string, required): Unique tweet/post ID
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/tweet/quotes?tweetId=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/tweet/translate
+
+**Description:**
+Translate tweet text to a target language using the built-in translation service.
+
+**Request Body:**
+- tweetId (string, required): The ID of the tweet to translate
+- dstLang (string, required): Target language code (e.g., "en", "es", "fr", "de", "ja", "zh-CN")
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/tweet/translate" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "tweetId": "1234567890",
+  "dstLang": "es"
+}'
+```
+
+
+================================================================================
+POST ENDPOINTS
+================================================================================
+
+### POST /tw-v2/interaction/create-post
+
+**Description:**
+Post a new tweet to the platform. Supports text content up to 280 characters for non-premium users, or 25,000 characters for premium users.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the tweet (max 280 characters for non-premium, 25,000 for premium)
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+- replyOption (object, optional): Optional reply controls. Use {"mode":"everyone"}, {"mode":"accounts_you_follow"}, {"mode":"accounts_you_follow_and_followed"}, {"mode":"mentioned_accounts"}, {"mode":"verified_accounts"}, or {"mode":"regions","regions":["NAM","EUR"]}. Region buckets: NAM, EAS, AFR, SEA, SAM, EUR, AUS, SAS, WES, CAS.
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/create-post" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Hello, world!",
+  "replyOption": {"mode":"mentioned_accounts"}
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/create-post-quote
+
+**Description:**
+Quote tweet another tweet with your own commentary. Supports text content up to 280 characters for non-premium users, or 25,000 characters for premium users.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the quote tweet (max 280 characters for non-premium, 25,000 for premium)
+- attachmentUrl (string, required): The URL of the tweet to quote (e.g. https://x.com/sample_user_00001/status/2001844185)
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+- replyOption (object, optional): Optional reply controls. Use {"mode":"everyone"}, {"mode":"accounts_you_follow"}, {"mode":"accounts_you_follow_and_followed"}, {"mode":"mentioned_accounts"}, {"mode":"verified_accounts"}, or {"mode":"regions","regions":["NAM","EUR"]}. Region buckets: NAM, EAS, AFR, SEA, SAM, EUR, AUS, SAS, WES, CAS.
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/create-post-quote" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Hello, world!",
+  "attachmentUrl": "https://x.com/sample_user_00001/status/2001844185",
+  "replyOption": {"mode":"regions","regions":["NAM","EUR"]}
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/create-post-with-media
+
+**Description:**
+Post a new tweet with media attachments to the platform. Supports text content up to 280 characters for non-premium users (or 25,000 for premium users) and up to 4 images or 1 video.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the tweet (max 280 characters for non-premium, 25,000 for premium)
+- media (array, required): Array of media objects (1-4 items). Each object must use exactly one source: {url: string}, {data: string, type: string}, or {media_id: string}. media_id must be a digit-only Twitter media_id_string uploaded and finalized with the same account.
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+- replyOption (object, optional): Optional reply controls. Use {"mode":"everyone"}, {"mode":"accounts_you_follow"}, {"mode":"accounts_you_follow_and_followed"}, {"mode":"mentioned_accounts"}, {"mode":"verified_accounts"}, or {"mode":"regions","regions":["NAM","EUR"]}. Region buckets: NAM, EAS, AFR, SEA, SAM, EUR, AUS, SAS, WES, CAS.
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/create-post-with-media" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Hello, world!",
+  "media": [{"url":"https://example.com/link-94089/profile-29900/image.jpg"}],
+  "replyOption": {"mode":"verified_accounts"}
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/reply-post
+
+**Description:**
+Reply to an existing tweet. Creates a tweet in the conversation thread. Supports text content up to 280 characters for non-premium users, or 25,000 characters for premium users.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the reply (max 280 characters for non-premium, 25,000 for premium)
+- tweetId (string, required): The ID of the tweet to reply to
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/reply-post" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Hello, world!",
+  "tweetId": "1234567890"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/reply-post-with-media
+
+**Description:**
+Reply to an existing tweet with media attachments. Creates a tweet in the conversation thread with up to 4 images or 1 video. Supports text content up to 280 characters for non-premium users, or 25,000 characters for premium users.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the reply (max 280 characters for non-premium, 25,000 for premium)
+- tweetId (string, required): The ID of the tweet to reply to
+- media (array, required): Array of media objects (1-4 items). Each object must use exactly one source: {url: string}, {data: string, type: string}, or {media_id: string}. media_id must be a digit-only Twitter media_id_string uploaded and finalized with the same account.
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/reply-post-with-media" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Hello, world!",
+  "tweetId": "1234567890",
+  "media": [{"url":"https://example.com/link-94089/profile-29900/image.jpg"}]
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/delete-post
+
+**Description:**
+Delete a tweet posted by the authenticated user.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- tweetId (string, required): The ID of the tweet to delete
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/delete-post" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "tweetId": "1234567890"
+}'
+```
+
+
+================================================================================
+INTERACTION ENDPOINTS
+================================================================================
+
+### POST /tw-v2/interaction/like-post
+
+**Description:**
+Like a tweet on behalf of an authenticated user.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- tweetId (string, required): The ID of the tweet to favorite
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/like-post" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "tweetId": "1234567890"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/unlike-post
+
+**Description:**
+Unlike a tweet on behalf of an authenticated user.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- tweetId (string, required): The ID of the tweet to unfavorite
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/unlike-post" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "tweetId": "1234567890"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/retweet
+
+**Description:**
+Retweet a tweet on behalf of an authenticated user. This endpoint allows you to programmatically retweet any public tweet using the user's authentication token.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- tweetId (string, required): The ID of the tweet to retweet
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/retweet" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "tweetId": "1234567890"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/delete-retweet
+
+**Description:**
+Remove a retweet (unretweet) on behalf of an authenticated user. This endpoint allows you to programmatically undo a retweet using the user's authentication token.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- tweetId (string, required): The ID of the original tweet that was retweeted
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/delete-retweet" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "tweetId": "1234567890"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/bookmark
+
+**Description:**
+Add a tweet to your bookmarks for later viewing.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- tweetId (string, required): The ID of the tweet to bookmark
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/bookmark" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "tweetId": "1234567890"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/delete-bookmark
+
+**Description:**
+Remove a tweet from your bookmarks.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- tweetId (string, required): The ID of the tweet to remove from bookmarks
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/delete-bookmark" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "tweetId": "1234567890"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/follow
+
+**Description:**
+Follow a user account.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- userId (string, required): The numeric user ID of the account to follow
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/follow" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "userId": "10017528"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/unfollow
+
+**Description:**
+Unfollow a user account.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- userId (string, required): The numeric user ID of the account to unfollow
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/unfollow" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "userId": "10017528"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/interaction/notifications
+
+**Description:**
+Retrieve the authenticated user's notifications timeline on the platform. Returns notifications including likes, retweets, mentions, and follows.
+
+**Parameters:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- timelineType (string, optional): Type of notifications to retrieve: 'All', 'Verified', or 'Mentions' (default: 'All')
+- count (number, optional): Number of results to return per page (min: 1, max: 100, default: 20)
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/interaction/notifications?authToken=YOUR_AUTH_TOKEN" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/interaction/user-analytics
+
+**Description:**
+Get detailed analytics for a user including engagement rates and growth metrics.
+
+**Parameters:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- toTime (string, optional): End time for analytics period in ISO 8601 format (default: current time)
+- fromTime (string, optional): Start time for analytics period in ISO 8601 format (default: 30 days ago)
+- granularity (string, optional): Time granularity for metrics: Daily, Weekly, or Monthly (default: Daily)
+- showVerifiedFollowers (boolean, optional): Include verified follower metrics (default: true)
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/interaction/user-analytics?authToken=YOUR_AUTH_TOKEN" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+
+================================================================================
+LIST ENDPOINTS
+================================================================================
+
+### GET /tw-v2/list/details
+
+**Description:**
+Get detailed information about a specific list including metadata, member count, and configuration settings.
+
+**Parameters:**
+- listId (string, required): Unique list ID
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/list/details?listId=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/list/tweets
+
+**Description:**
+Retrieve tweets from a specific list. Returns a paginated timeline of tweets posted by list members.
+
+**Parameters:**
+- listId (string, required): Unique list ID
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/list/tweets?listId=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/list/members
+
+**Description:**
+Get a paginated list of members in a list.
+
+**Parameters:**
+- listId (string, required): Unique list ID
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/list/members?listId=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/list/followers
+
+**Description:**
+Get a paginated list of users following a specific list. Returns user objects with complete profile information.
+
+**Parameters:**
+- listId (string, required): Unique list ID
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/list/followers?listId=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/list/create
+
+**Description:**
+Create a list for the authenticated Twitter/X account.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- name (string, required): List name, up to 25 characters
+- description (string, optional): Optional list description, up to 100 characters. Defaults to an empty string.
+- isPrivate (boolean, optional): Whether the list should be private. Defaults to true.
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/list/create" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "name": "Market Watch",
+  "description": "Accounts to monitor for market updates",
+  "isPrivate": true
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/list/add-member
+
+**Description:**
+Add a user to one of the authenticated account's lists.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- listId (string, required): The ID of the list to add the user to
+- userId (string, required): The ID of the user to add to the list
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/list/add-member" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "listId": "1234567890",
+  "userId": "10017528"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/list/remove-member
+
+**Description:**
+Remove a user from one of the authenticated account's lists.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- listId (string, required): The ID of the list to remove the user from
+- userId (string, required): The ID of the user to remove from the list
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/list/remove-member" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "listId": "1234567890",
+  "userId": "10017528"
+}'
+```
+
+
+================================================================================
+PROFILE ENDPOINTS
+================================================================================
+
+### POST /tw-v2/profile/update
+
+**Description:**
+Update display profile fields for the authenticated Twitter/X account.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- name (string, optional): Display name, up to 50 characters
+- bio (string, optional): Profile bio, up to 160 characters
+- location (string, optional): Profile location, up to 30 characters
+- website (string, optional): Profile website URL. Use an empty string to clear the website.
+- proxy (string, optional): Optional proxy in format 'hostname:port@username:password'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/profile/update" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "name": "Sample User",
+  "bio": "Building with TweetAPI",
+  "location": "Bangkok",
+  "website": "https://example.com"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/profile/avatar
+
+**Description:**
+Update the profile picture for the authenticated Twitter/X account using an image URL or base64 image payload.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- media (object, required): Image object. Use {url:string} or {data:string,type:string}. Supported types are image/jpeg, image/jpg, image/png, and image/webp. Direct media_id values are not supported.
+- proxy (string, optional): Optional proxy in format 'hostname:port@username:password'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/profile/avatar" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "media": {"url":"https://example.com/images/profile-avatar.jpg"}
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/profile/banner
+
+**Description:**
+Update the profile banner for the authenticated Twitter/X account using an image URL or base64 image payload.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- media (object, required): Image object. Use {url:string} or {data:string,type:string}. Supported types are image/jpeg, image/jpg, image/png, and image/webp. Direct media_id values are not supported.
+- proxy (string, optional): Optional proxy in format 'hostname:port@username:password'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/profile/banner" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "media": {"url":"https://example.com/images/profile-banner.jpg"}
+}'
+```
+
+
+================================================================================
+COMMUNITY ENDPOINTS
+================================================================================
+
+### GET /tw-v2/community/details
+
+**Description:**
+Get detailed information about a specific community including metadata, member count, and settings.
+
+**Parameters:**
+- communityId (string, required): Unique community ID
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/community/details?communityId=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/community/tweets
+
+**Description:**
+Retrieve tweets from a specific community. Returns a paginated timeline of community tweets with configurable sorting.
+
+**Parameters:**
+- communityId (string, required): Unique community ID
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+- sortBy (string, optional): Optional sort order for results (Relevance, Recency). Defaults to Relevance.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/community/tweets?communityId=1234567890&sortBy=Relevance" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/community/members
+
+**Description:**
+Get a paginated list of members in a community.
+
+**Parameters:**
+- communityId (string, required): Unique community ID
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/community/members?communityId=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/community/search
+
+**Description:**
+Search for communities by keyword. Returns a list of communities matching the search query with basic information like name, member count, and topic.
+
+**Parameters:**
+- query (string, required): Search query string to find communities
+- cursor (string, optional): Pagination cursor for fetching next page of results
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/community/search?query=programming" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/create-community-post
+
+**Description:**
+Post a new tweet to a specific community. Supports text content up to 280 characters for non-premium users, or 25,000 characters for premium users.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the tweet (max 280 characters for non-premium, 25,000 for premium)
+- communityId (string, required): The ID of the community to post to (numeric only)
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/create-community-post" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Sample post text 40338 for documentation.",
+  "communityId": "1234567890",
+  "proxy": "proxy.example.com:8080@user:pass"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/create-community-post-with-media
+
+**Description:**
+Post a new tweet with media attachments to a specific community. Supports text content up to 280 characters for non-premium users (or 25,000 for premium users) and up to 4 images or 1 video.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the tweet (max 280 characters for non-premium, 25,000 for premium)
+- communityId (string, required): The ID of the community to post to (numeric only)
+- media (array, required): Array of media objects (1-4 items). Each object must use exactly one source: {url: string}, {data: string, type: string}, or {media_id: string}. media_id must be a digit-only Twitter media_id_string uploaded and finalized with the same account.
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/create-community-post-with-media" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Sample post text 87088 for documentation.",
+  "communityId": "1234567890",
+  "media": [{"url":"https://example.com/link-94089/profile-29900/image.jpg"}],
+  "proxy": "proxy.example.com:8080@user:pass"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/reply-community-post
+
+**Description:**
+Reply to an existing tweet within a community. Creates a reply in the conversation thread with community context. Supports text content up to 280 characters for non-premium users, or 25,000 characters for premium users.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the reply (max 280 characters for non-premium, 25,000 for premium)
+- tweetId (string, required): The ID of the tweet to reply to (numeric only)
+- communityId (string, required): The ID of the community to post to (numeric only)
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/reply-community-post" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Sample post text 67773 for documentation.",
+  "tweetId": "1234567890",
+  "communityId": "9876543210",
+  "proxy": "proxy.example.com:8080@user:pass"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/reply-community-post-with-media
+
+**Description:**
+Reply to an existing tweet within a community with media attachments. Creates a reply in the conversation thread with community context and up to 4 images or 1 video. Supports text content up to 280 characters for non-premium users, or 25,000 characters for premium users.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the reply (max 280 characters for non-premium, 25,000 for premium)
+- tweetId (string, required): The ID of the tweet to reply to (numeric only)
+- communityId (string, required): The ID of the community to post to (numeric only)
+- media (array, required): Array of media objects (1-4 items). Each object must use exactly one source: {url: string}, {data: string, type: string}, or {media_id: string}. media_id must be a digit-only Twitter media_id_string uploaded and finalized with the same account.
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/reply-community-post-with-media" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Sample post text 77733 for documentation.",
+  "tweetId": "1234567890",
+  "communityId": "9876543210",
+  "media": [{"url":"https://example.com/link-94089/profile-29900/image.jpg"}],
+  "proxy": "proxy.example.com:8080@user:pass"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/create-community-quote
+
+**Description:**
+Quote tweet another tweet inside a specific community with your own commentary. Supports text content up to 280 characters for non-premium users, or 25,000 characters for premium users.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the quote tweet (max 280 characters for non-premium, 25,000 for premium)
+- attachmentUrl (string, required): The URL of the tweet to quote (e.g. https://x.com/sample_user_00001/status/2001844185)
+- communityId (string, required): The ID of the community to post to (numeric only)
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/create-community-quote" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Sample post text 93445 for documentation.",
+  "attachmentUrl": "https://x.com/sample_user_00001/status/2001844185",
+  "communityId": "4001272782786434945",
+  "proxy": "proxy.example.com:8080@user:pass"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/create-community-quote-with-media
+
+**Description:**
+Quote tweet another tweet inside a specific community with your own commentary and media attachments (images or video). Supports text content up to 280 characters for non-premium users, or 25,000 characters for premium users.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- text (string, required): The text content of the quote tweet (max 280 characters for non-premium, 25,000 for premium)
+- attachmentUrl (string, required): The URL of the tweet to quote (e.g. https://x.com/sample_user_00001/status/2001844185)
+- communityId (string, required): The ID of the community to post to (numeric only)
+- media (array, required): Array of media objects (1-4 items). Each object must use exactly one source: {url: string}, {data: string, type: string}, or {media_id: string}. media_id must be a digit-only Twitter media_id_string uploaded and finalized with the same account.
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+- disableLinkPreview (boolean, optional): When true, disables link preview cards for tweets containing URLs (defaults to false)
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/create-community-quote-with-media" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "text": "Sample post text 93445 for documentation.",
+  "attachmentUrl": "https://x.com/sample_user_00001/status/2001844185",
+  "communityId": "4001272782786434945",
+  "media": [{"url": "https://example.com/link-94089/profile-29900/image.jpg"}],
+  "proxy": "proxy.example.com:8080@user:pass"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/join-community
+
+**Description:**
+Join a community. Returns community details including name, description, member count, and your role after joining.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- communityId (string, required): The numeric ID of the community to join
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/join-community" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "communityId": "1001937475184068444"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/leave-community
+
+**Description:**
+Leave a community. Returns community details including name, description, and member count after leaving.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- communityId (string, required): The numeric ID of the community to leave
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/leave-community" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "communityId": "1001937475184068444"
+}'
+```
+
+
+================================================================================
+SPACE ENDPOINTS
+================================================================================
+
+### GET /tw-v2/space/by-id
+
+**Description:**
+Retrieve detailed information about a platform Space (audio room) by its ID. Returns comprehensive data including title, state, creator, participants, topics, and engagement stats.
+
+**Parameters:**
+- spaceId (string, required): Unique Space ID (e.g., '1MnxnPmLRQBGO')
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/space/by-id?spaceId=1MnxnPmLRQBGO" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/space/stream-url
+
+**Description:**
+Get the audio stream URL for a platform Space. Returns an HLS stream URL that can be used to listen to the Space audio. The mediaKey can be obtained from the Space details endpoint.
+
+**Parameters:**
+- mediaKey (string, required): Media key of the Space (obtained from the space by-id endpoint's mediaKey field)
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/space/stream-url?mediaKey=28_1991353658102149130" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+
+================================================================================
+SEARCH ENDPOINTS
+================================================================================
+
+### GET /tw-v2/search
+
+**Description:**
+Search for tweets, users, or other content on the platform. Supports various search operators and filters.
+
+**Parameters:**
+- query (string, required): Search query string. Supports advanced search operators.
+- type (string, required): Type of search results (Latest, Top, People, Photos, Videos)
+- cursor (string, optional): Pagination cursor for fetching next page of results. Obtained from previous response.
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/search?query=javascript&type=Latest" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+
+================================================================================
+AUTH ENDPOINTS
+================================================================================
+
+### POST /tw-v2/auth/login
+
+**Description:**
+Authenticate a platform account and retrieve session cookies for use with interaction endpoints. A successful response consumes 50 request units. Rate limited to 60 requests per minute.
+
+**Request Body:**
+- username (string, required): Account username or email
+- password (string, required): Account password
+- twoFactorSecret (string, optional): TOTP secret (min 16 chars) for accounts with 2FA enabled. Used to auto-generate 2FA codes.
+- proxy (string, required): Proxy in format 'hostname:port@username:password'. Required for all login requests.
+- country (string, required): Assigned ISO 3166-1 alpha-2 code for the public IP used to reach X. Use the proxy exit country (for example, 'US'). All assigned codes are accepted, and input is normalized to uppercase.
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/auth/login" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "username": "yourUsername",
+  "password": "yourPassword",
+  "proxy": "proxy.example.com:8080@proxyUser:proxyPass",
+  "country": "US"
+}'
+```
+
+
+================================================================================
+X CHAT (Encrypted DMs) ENDPOINTS
+================================================================================
+
+### POST /tw-v2/xchat/setup
+
+**Description:**
+Initialize X Chat (encrypted DMs) for your account. This is a required first step before sending encrypted messages. You must have X Chat already set up in the official app before using this endpoint.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- userId (string, required): Your platform user ID (numeric string)
+- pin (string, required): Your X Chat PIN (4-6 digits) set up in the official app
+- proxy (string, optional): Proxy in format 'hostname:port@username:password'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/xchat/setup" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "userId": "1001937475184068444",
+  "pin": "123456"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/xchat/conversations
+
+**Description:**
+Get a list of all X Chat conversations in your inbox. Returns conversation metadata including participants and timestamps. This endpoint does not require /xchat/setup since it only returns metadata, not decrypted message content.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- cursor (string, optional): Pagination cursor from previous response
+- graphSnapshotId (string, optional): Graph snapshot ID from previous response (required together with cursor for page 2+)
+- limit (number, optional): Number of conversations per page (1-100, default 50)
+- proxy (string, optional): Proxy in format 'hostname:port@username:password'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/xchat/conversations" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "cursor": "50",
+  "graphSnapshotId": "bf0310dd-d428-4de1-9815-435bc3791406"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/xchat/send
+
+**Description:**
+Send an end-to-end encrypted direct message via X Chat. Prerequisite - You must call /xchat/setup first before sending messages.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- recipientId (string, required): platform user ID of the message recipient (numeric string)
+- message (string, required): The message text to send (max 10,000 characters)
+- proxy (string, optional): Proxy in format 'hostname:port@username:password'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/xchat/send" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "recipientId": "9876543210987654321",
+  "message": "Hello! This is an encrypted message."
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/xchat/history
+
+**Description:**
+Get decrypted conversation history for an end-to-end encrypted X Chat conversation. Returns messages in decrypted plaintext with metadata. Prerequisite - You must call /xchat/setup first before fetching history.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- conversationId (string, required): Conversation ID in format 'userId1:userId2' (both user IDs separated by colon)
+- cursor (string, optional): Pagination cursor from previous response (nextCursor value)
+- limit (number, optional): Maximum number of messages to return (1-200, default 200)
+- proxy (string, optional): Proxy in format 'hostname:port@username:password'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/xchat/history" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "conversationId": "1001937475184068444:9876543210987654321"
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/xchat/can-dm
+
+**Description:**
+Check if users can receive X Chat encrypted DMs. Returns chat permissions including whether they have X Chat enabled and a public key for encryption. Use this endpoint to verify recipients before attempting to send encrypted messages.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- userIds (array, required): Array of platform user IDs to check (1-100 IDs per request)
+- proxy (string, optional): Proxy in format 'hostname:port@username:password'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/xchat/can-dm" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "userIds": ["1000000000000000001", "1000000000000000002"]
+}'
+```
+
+
+================================================================================
+UNENCRYPTED DM (Legacy) ENDPOINTS
+================================================================================
+
+### POST /tw-v2/interaction/send-dm
+
+**Description:**
+Send a direct message to a user with optional media attachment. Supports images, GIFs, and videos with automatic type detection and processing. Maximum 1 media item per DM.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- conversationId (string, required): Conversation ID. For 1-on-1 conversations: 'userId1-userId2' (e.g., '123456789-987654321'). For group conversations: single conversation ID (e.g., '1234567890')
+- text (string, required): The text content of the direct message (max 10,000 characters)
+- requestId (string, optional): Optional UUID for request tracking. Auto-generated if not provided.
+- media (array, optional): Optional array with 1 media object. Can be {url: string} or {data: string, type: string}
+- proxy (string, required): Proxy in format 'hostname:port@username:password' (required for better success rates)
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/send-dm" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "conversationId": "123456789-987654321",
+  "text": "Hello! This is a test DM.",
+  "media": [{"url":"https://example.com/link-94089/profile-29900/image.jpg"}]
+}'
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/interaction/dm-permissions
+
+**Description:**
+Check if you can send direct messages to specific users. Verifies DM permissions for up to 50 recipient IDs at once.
+
+**Parameters:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- recipientIds (string, required): Comma-separated list of user IDs to check (max 50 IDs, e.g., '123456789,987654321')
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/interaction/dm-permissions?authToken=YOUR_AUTH_TOKEN&recipientIds=123456789,987654321" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/interaction/inbox-initial-state
+
+**Description:**
+Get the initial state of your DM inbox. Returns conversations, messages, user data, and inbox timeline cursors for pagination. Use the returned cursor for polling updates via dm-user-updates endpoint.
+
+**Parameters:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/interaction/inbox-initial-state?authToken=YOUR_AUTH_TOKEN" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/interaction/inbox-timeline-trusted
+
+**Description:**
+Get paginated trusted conversations timeline. Use the cursor from inbox-initial-state or previous response to fetch next page of trusted DM conversations.
+
+**Parameters:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- cursor (string, required): Cursor for pagination. Get from inbox-initial-state or previous response.
+- filterLowQuality (boolean, optional): Filter out low quality conversations (default false)
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/interaction/inbox-timeline-trusted?authToken=YOUR_AUTH_TOKEN&cursor=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/interaction/inbox-timeline-untrusted
+
+**Description:**
+Get paginated untrusted/filtered conversations timeline. Use the cursor from inbox-initial-state or previous response to fetch next page of untrusted DM conversations (message requests).
+
+**Parameters:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- cursor (string, required): Cursor for pagination. Get from inbox-initial-state or previous response.
+- filterLowQuality (boolean, optional): Filter out low quality conversations (default false)
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/interaction/inbox-timeline-untrusted?authToken=YOUR_AUTH_TOKEN&cursor=1234567890" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/interaction/conversation
+
+**Description:**
+Get messages from a specific DM conversation. Returns conversation details, messages, and user data. Supports pagination with cursor for loading message history.
+
+**Parameters:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- conversationId (string, required): Conversation ID. For 1-on-1 conversations: 'userId1-userId2' (e.g., '123456789-987654321'). For group conversations: single conversation ID (e.g., '1234567890')
+- cursor (string, optional): Pagination cursor for loading older messages. Obtained from previous response.
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/interaction/conversation?authToken=YOUR_AUTH_TOKEN&conversationId=123456789-987654321" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### GET /tw-v2/interaction/dm-user-updates
+
+**Description:**
+Poll for new DM updates and changes. Use the cursor from inbox-initial-state or previous dm-user-updates response to check for new messages, conversations, and updates. Ideal for real-time DM monitoring.
+
+**Parameters:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- cursor (string, required): Update cursor from inbox-initial-state or previous dm-user-updates response. Required for polling.
+- proxy (string, optional): Optional proxy in format 'host:port@user:pass'
+
+**Example:**
+```bash
+curl -X GET "https://api.tweetapi.com/tw-v2/interaction/dm-user-updates?authToken=YOUR_AUTH_TOKEN&cursor=UPDATE_CURSOR_HERE" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+--------------------------------------------------------------------------------
+
+### POST /tw-v2/interaction/accept-conversation
+
+**Description:**
+Accept an untrusted DM conversation (message request). Moves the conversation from the untrusted inbox to the trusted inbox, allowing future messages from the sender. This is the equivalent of clicking "Accept" on a message request in the web UI.
+
+**Request Body:**
+- authToken (string, required): Account authentication token (auth_token cookie value)
+- conversationId (string, required): Conversation ID. For 1-on-1 conversations: 'userId1-userId2' (e.g., '123456789-987654321'). For group conversations: single conversation ID (e.g., '1234567890')
+- proxy (string, optional): Optional proxy in format 'hostname:port@username:password'
+
+**Example:**
+```bash
+curl -X POST "https://api.tweetapi.com/tw-v2/interaction/accept-conversation" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "authToken": "YOUR_AUTH_TOKEN",
+  "conversationId": "123456789-987654321"
+}'
+```
+
+
+================================================================================
+ADDITIONAL INFORMATION
+================================================================================
+
+**Response Format:**
+- All endpoints return JSON responses
+- Success responses are wrapped in a "data" object
+- Error responses include "error" object with code and message
+
+**Data Types:**
+- Timestamps are in ISO 8601 format (e.g., "2025-10-05T14:30:00.000Z")
+- IDs are strings (snowflake IDs, e.g., "1234567890")
+- Cursors are opaque strings used for pagination
+
+**Pagination:**
+- Many endpoints support cursor-based pagination
+- Include "cursor" parameter from previous response to get next page
+- When cursor is absent/empty, you've reached the end
+
+**Rate Limiting:**
+- Rate limits are per API key and per minute
+- HTTP 429 can indicate request-allowance exhaustion or a per-minute limit; inspect the error message before retrying
+- TweetAPI's tw-v2 endpoints do not currently return Retry-After or X-RateLimit-* headers
+- Use bounded backoff and lower concurrency for transient per-minute limits
+
+**Support:**
+- Telegram: @tweetapi
+
+END OF DOCUMENTATION

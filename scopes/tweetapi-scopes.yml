@@ -1,0 +1,44 @@
+generated: '2026-08-11'
+method: probed
+source: https://tweetapi.com/.well-known/oauth-authorization-server
+corroborating_source: https://mcp.tweetapi.com/.well-known/oauth-protected-resource/mcp
+docs: https://tweetapi.com/docs/getting-started/agents
+applies_to: TweetAPI Hosted MCP Server (https://mcp.tweetapi.com/mcp)
+note: >-
+  Read from live RFC 8414 / RFC 9728 discovery documents, not from an OpenAPI oauth2 securityScheme —
+  TweetAPI publishes no OpenAPI. The REST API is API-key authenticated and has no scope surface at
+  all; scopes exist only on the MCP OAuth boundary.
+schemes:
+  - name: TweetAPIOAuth
+    issuer: https://tweetapi.com
+    source: https://tweetapi.com/.well-known/oauth-authorization-server
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://tweetapi.com/dashboard/mcp/authorize
+        tokenUrl: https://tweetapi.com/api/oauth/token
+        code_challenge_methods: [S256]
+scopes:
+  - scope: tweetapi:read
+    description: >-
+      Read-only access through the hosted MCP server — TweetAPI documentation tools and live
+      public-data lookups. Excludes posting, engagement, account-secret, DM, billing and
+      administration operations.
+    flows: [authorizationCode]
+    sources: [https://tweetapi.com/.well-known/oauth-authorization-server, https://mcp.tweetapi.com/.well-known/oauth-protected-resource/mcp]
+  - scope: offline_access
+    description: >-
+      Issue a refresh token so an agent client can maintain the authorization across sessions
+      without re-running the dashboard flow.
+    flows: [authorizationCode]
+    sources: [https://tweetapi.com/.well-known/oauth-authorization-server, https://mcp.tweetapi.com/.well-known/oauth-protected-resource/mcp]
+scope_count: 2
+granularity: coarse
+gaps:
+  - >-
+    A single read scope covers the entire read surface — an agent authorized for a user lookup is
+    equally authorized for search, lists, communities and Spaces. There is no per-resource or
+    per-category scope, and no write scope exists because writes are excluded from MCP entirely.
+  - No published scopes reference page; the scope strings are discoverable only from the metadata documents.
+x-evidence:
+  - {url: 'https://tweetapi.com/.well-known/oauth-authorization-server', http_status: 200, fetched: '2026-08-11'}
+  - {url: 'https://mcp.tweetapi.com/.well-known/oauth-protected-resource/mcp', http_status: 200, fetched: '2026-08-11'}

@@ -1,0 +1,77 @@
+generated: '2026-08-11'
+method: searched
+source: https://tweetapi.com/docs/getting-started/overview
+corroborating_sources:
+  - https://tweetapi.com/.well-known/oauth-authorization-server
+  - https://mcp.tweetapi.com/.well-known/oauth-protected-resource/mcp
+  - https://tweetapi.com/llms.txt
+docs: https://tweetapi.com/docs/getting-started/overview
+note: >-
+  Derived by hand rather than by derive-authentication.py: TweetAPI publishes no OpenAPI, so there
+  are no securitySchemes to aggregate. Everything below was read from the provider's own docs and
+  live OAuth discovery documents.
+summary:
+  types: [apiKey, oauth2]
+  api_key_in: [header]
+  oauth2_flows: [authorizationCode]
+  surfaces: 2
+schemes:
+  - name: XApiKey
+    type: apiKey
+    in: header
+    parameter_name: X-API-Key
+    applies_to: TweetAPI tw-v2 REST API (all 76 documented endpoints)
+    source: https://tweetapi.com/docs/getting-started/overview
+    obtained_from: https://tweetapi.com/dashboard (account required, free trial without a card)
+    note: >-
+      Single key, no scopes, no key-level permission model. The key identifies the billing account
+      and its rate ceiling; it does not restrict which endpoint categories may be called.
+  - name: TweetAPIOAuth
+    type: oauth2
+    applies_to: TweetAPI Hosted MCP Server (https://mcp.tweetapi.com/mcp)
+    source: https://tweetapi.com/.well-known/oauth-authorization-server
+    issuer: https://tweetapi.com
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://tweetapi.com/dashboard/mcp/authorize
+        tokenUrl: https://tweetapi.com/api/oauth/token
+        revocationUrl: https://tweetapi.com/api/oauth/revoke
+        registrationUrl: https://tweetapi.com/api/oauth/register
+        scopes: [tweetapi:read, offline_access]
+    pkce: {supported: true, methods: [S256], required_hint: only S256 advertised}
+    grant_types: [authorization_code, refresh_token]
+    token_endpoint_auth_methods: [none]
+    resource_indicators: true
+    bearer_methods: [header]
+    note: >-
+      RFC 8414 authorization-server metadata plus RFC 9728 protected-resource metadata, with dynamic
+      client registration (RFC 7591) and RFC 8707 resource indicators. This is a materially stronger
+      auth posture than the REST surface, and it exists so the API key stays behind the OAuth
+      boundary instead of being pasted into an agent client.
+account_credentials:
+  note: >-
+    A distinct third credential class, and the one a governance reader should look at hardest. The
+    account-authorized endpoints (posting, engagement, lists, profile, X Chat, legacy DM — 43 of 76
+    documented endpoints) require the caller to pass end-user Twitter/X session material as ordinary
+    request parameters: authToken (the auth_token cookie), ct0 (the CSRF token), an optional
+    upstream proxy string of the form host:port@user:pass, and for POST /tw-v2/auth/login a username,
+    password and twoFactorSecret. These are not TweetAPI credentials and there is no delegated
+    authorization (no OAuth to X, no token exchange) in front of them.
+  fields: [authToken, ct0, proxy, password, twoFactorSecret]
+  transport_concern: >-
+    Several of these appear as query-string parameters in the provider's own published curl examples
+    (for example GET /tw-v2/interaction/inbox-timeline-trusted?authToken=...), which puts long-lived
+    session cookies into URLs and therefore into logs and referrers. Moving them to the request body
+    or a header would be a meaningful hardening step.
+  provider_guidance: >-
+    TweetAPI's own agent skill forbids agents from requesting, storing or forwarding any of these
+    values, and the hosted MCP server deliberately does not expose the endpoints that need them.
+gaps:
+  - No scopes or per-key permissions on the REST surface
+  - No key rotation or expiry policy published
+  - No mTLS, no signed requests, no OpenID Connect
+  - No documented 403 behaviour distinguishing key-level from account-level authorization failure
+see_also:
+  - scopes/tweetapi-scopes.yml
+  - conventions/tweetapi-conventions.yml
+  - well-known/tweetapi-well-known.yml

@@ -1,0 +1,51 @@
+generated: '2026-08-11'
+method: searched
+source: https://registry.npmjs.org/tweetapi-node, https://pypi.org/pypi/tweetapi/json, https://github.com/tweetapi
+packages:
+  - language: javascript
+    registry: npm
+    name: tweetapi-node
+    url: https://www.npmjs.com/package/tweetapi-node
+    install: npm install tweetapi-node
+    official: true
+    version: 2.1.0
+    published: '2026-07-29'
+    source_code: https://github.com/tweetapi/node
+    description: Official Node.js/TypeScript SDK for the TweetAPI tw-v2 REST API.
+    note: >-
+      Registry metadata read from registry.npmjs.org on 2026-08-11; 4 published versions. Repo
+      github.com/tweetapi/node last pushed 2026-07-29, same day as the release — SDK and API docs
+      bundle (ai-docs-v2.txt, generated 2026-07-29) are in step.
+  - language: python
+    registry: pypi
+    name: tweetapi
+    url: https://pypi.org/project/tweetapi/
+    install: pip install tweetapi
+    official: true
+    version: 2.1.0
+    published: '2026-07-29'
+    source_code: https://github.com/tweetapi/python
+    description: Official Python SDK for the TweetAPI tw-v2 REST API.
+    note: >-
+      Registry metadata read from pypi.org/pypi/tweetapi/json on 2026-08-11. Project URLs point at
+      github.com/tweetapi/python and tweetapi.com, confirming first-party.
+excluded:
+  - name: tweetapi
+    registry: npm
+    url: https://www.npmjs.com/package/tweetapi
+    official: false
+    version: 0.0.2
+    published: '2014-02-10'
+    reason: >-
+      Name collision only. Unrelated 2014 Raspberry Pi tweeting project by an unaffiliated
+      maintainer (github.com/DonaldDerek/TweetaPi). Not a TweetAPI client library.
+registries_checked:
+  - {registry: npm, result: hit}
+  - {registry: pypi, result: hit}
+  - {registry: rubygems, result: none}
+  - {registry: crates.io, result: none}
+  - {registry: nuget, result: none}
+  - {registry: maven-central, result: none}
+  - {registry: pkg.go.dev, result: none}
+  - {registry: packagist, result: none}
+official_sdk_count: 2

@@ -1,0 +1,41 @@
+generated: '2026-08-11'
+method: searched
+source: https://tweetapi.com/docs/getting-started/overview
+corroborating_sources:
+  - https://tweetapi.com/pricing
+  - https://tweetapi.com/llms.txt
+  - https://tweetapi.com/ai-docs-v2.txt
+limit_count: 4
+enforcement:
+  scope: per-api-key
+  status_code_on_exhaustion: 429
+  error_code: RATE_LIMIT
+  dimensions:
+    - {dimension: per-minute request ceiling, scope: per-api-key, window: 60s}
+    - {dimension: plan request allowance, scope: per-api-key, window: billing period}
+limits:
+  - {plan: Free, scope: per-api-key, window: 60s, limit: 10, unit: requests, burst: null, allowance: 100 requests one-time}
+  - {plan: Pro, scope: per-api-key, window: 60s, limit: 60, unit: requests, burst: null, allowance: 100000 requests/month}
+  - {plan: Ultra, scope: per-api-key, window: 60s, limit: 120, unit: requests, burst: null, allowance: 500000 requests/month}
+  - {plan: Mega, scope: per-api-key, window: 60s, limit: 180, unit: requests, burst: null, allowance: 2000000 requests/month}
+response_headers:
+  published: false
+  retry_after: false
+  ratelimit_headers: false
+  quote: >-
+    "TweetAPI's tw-v2 endpoints do not currently return Retry-After or X-RateLimit-* headers."
+  note: >-
+    This is the provider's own explicit statement, repeated in llms.txt, ai-docs-v2.txt and the docs
+    overview. It is an unusually honest disclosure and also the single biggest agent-readiness gap on
+    this API: an agent gets no runtime budget signal at all and cannot distinguish a 429 caused by
+    allowance exhaustion from one caused by the per-minute ceiling except by parsing the error
+    message string. Recommended provider fix: emit RateLimit-Limit/RateLimit-Remaining/RateLimit-Reset
+    (RFC 9331 draft) plus Retry-After on 429.
+client_guidance_published:
+  - Inspect the 429 error message before retrying — it distinguishes allowance exhaustion from a per-minute limit
+  - Use bounded backoff and lower concurrency for transient per-minute limits
+  - Do not auto-paginate; each page is a billed request
+mcp_note: >-
+  Live calls through the hosted MCP server at https://mcp.tweetapi.com/mcp are forwarded to the REST
+  API and consume the quota of the API key selected during OAuth authorization. The MCP surface adds
+  no separate limit.

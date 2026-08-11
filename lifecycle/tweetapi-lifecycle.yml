@@ -1,0 +1,71 @@
+generated: '2026-08-11'
+method: searched
+source: https://tweetapi.com/docs/getting-started/overview
+corroborating_sources:
+  - https://tweetapi.com/llms.txt
+  - https://tweetapi.com/status
+  - https://tweetapi.com/sitemap-0.xml
+versioning:
+  scheme: uri-path
+  current: tw-v2
+  base_url: https://api.tweetapi.com/tw-v2
+  docs: https://tweetapi.com/docs/getting-started/overview
+  note: >-
+    Version is a path segment. A prior generation is visible in endpoint naming (the docs carry both
+    user/followers-v1 and user/followers-v2, user/following-v1 and user/following-v2), so more than
+    one generation is live, but no policy governs the transition.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy, no notice window, no RFC 8594 Sunset/Deprecation header support, and no
+    published list of deprecated endpoints — despite v1 and v2 variants of the follower/following
+    endpoints coexisting in the current documentation. Nothing here is wired as type Deprecation.
+sla:
+  url: null
+  uptime_target: null
+  published: false
+  note: >-
+    No SLA or uptime commitment is published on the pricing page or in the terms. Paid tiers
+    advertise "priority support" only.
+status_page:
+  url: https://tweetapi.com/status
+  http_status: 200
+  hosted: first-party
+  external_provider: null
+  note: >-
+    A first-party status page at tweetapi.com/status titled "TweetAPI uptime and availability" and
+    described as live service-level monitoring with recent availability history. The page shell is
+    server-rendered and the availability data loads client-side from a dashboard-authenticated
+    endpoint (GET https://tweetapi.com/api/status returns 401 anonymously), so the numbers are not
+    machine-readable to an unauthenticated agent. An unauthenticated liveness endpoint does exist:
+    GET https://tweetapi.com/api/health returns {"ok":true}.
+  fetched: '2026-08-11'
+changelog:
+  url: null
+  published: false
+  note: >-
+    No changelog, release-notes or "what's new" page. https://tweetapi.com/changelog returns 404 and
+    the sitemap lists no changelog route. The nearest dated signals are the "Last updated" line in
+    llms.txt (2026-07-28), the "Generated" line in ai-docs-v2.txt (2026-07-29), and the SDK release
+    dates (both SDKs at 2.1.0, published 2026-07-29). No changelog/ artifact is emitted for this
+    reason.
+support:
+  channel: Telegram
+  url: https://t.me/tweetapi
+  note: Sole published support channel; the GitHub org lists support@tweetapi.com.
+roadmap:
+  url: null
+  published: false
+maturity:
+  api_generation: tw-v2
+  documented_endpoints: 76
+  docs_generated: '2026-07-29'
+  sdk_versions: {node: 2.1.0, python: 2.1.0}
+  note: >-
+    Docs bundle, both SDKs and the agent-skill repo were all published or refreshed within days of
+    each other (2026-07-28 to 2026-08-07), so the surface is actively maintained even though the
+    lifecycle governance around it is absent.

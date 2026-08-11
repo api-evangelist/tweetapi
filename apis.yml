@@ -3,9 +3,10 @@ description: >-
   Independent third-party REST API for public Twitter/X data, built for developers, researchers, startups, agencies, and
   analytics teams. Offers user profiles, tweets, search, lists, communities, Spaces, posting/engagement, and DMs, plus a
   hosted MCP server and llms.txt for agent access. Not affiliated with X Corp.
+image: https://tweetapi.com/api/og?type=landing
 url: https://tweetapi.apievangelist.com/apis.yml
 created: '2026-08-10'
-modified: '2026-08-10'
+modified: '2026-08-11'
 specificationVersion: '0.21'
 tags:
   - twitter
@@ -45,6 +46,18 @@ apis:
         url: https://tweetapi.com/docs/getting-started/overview
       - type: LLMsTxt
         url: https://tweetapi.com/llms.txt
+      - type: APIReference
+        url: https://tweetapi.com/ai-docs-v2.txt
+      - type: Authentication
+        url: authentication/tweetapi-authentication.yml
+      - type: RateLimits
+        url: rate-limits/tweetapi-rate-limits.yml
+      - type: ErrorCatalog
+        url: errors/tweetapi-problem-types.yml
+      - type: Conventions
+        url: conventions/tweetapi-conventions.yml
+      - type: DataModel
+        url: data-model/tweetapi-data-model.yml
   - name: TweetAPI Hosted MCP Server
     description: >-
       Hosted remote HTTP MCP server providing current TweetAPI docs and read-only live public-data tools. Uses OAuth via
@@ -70,11 +83,85 @@ apis:
         url: https://mcp.tweetapi.com/mcp
       - type: Documentation
         url: https://tweetapi.com/docs/getting-started/agents
+      - type: MCPServer
+        name: MCP server manifest
+        url: mcp/tweetapi-mcp.yml
+      - type: OAuthScopes
+        url: scopes/tweetapi-scopes.yml
+      - type: AgentSkill
+        url: skills/_index.yml
 maintainers:
   - FN: TweetAPI
+    email: support@tweetapi.com
     url: https://tweetapi.com
 generated:
   by: apis.io/add
   model: claude-opus-4-8
   confidence: 95
   at: '2026-08-10T15:07:31.972Z'
+common:
+- type: DomainSecurity
+  url: security/tweetapi-domain-security.yml
+- type: DeveloperPortal
+  url: https://tweetapi.com/docs
+- type: Documentation
+  url: https://tweetapi.com/docs
+- type: APIReference
+  url: https://tweetapi.com/ai-docs-v2.txt
+- type: GettingStarted
+  url: https://tweetapi.com/docs/getting-started/overview
+- type: Blog
+  url: https://tweetapi.com/blog
+- type: Support
+  url: https://t.me/tweetapi
+- type: GitHubOrganization
+  url: https://github.com/tweetapi
+- type: Pricing
+  url: https://tweetapi.com/pricing
+- type: SignUp
+  url: https://tweetapi.com/auth/signup
+- type: TermsOfService
+  url: https://tweetapi.com/terms
+- type: PrivacyPolicy
+  url: https://tweetapi.com/privacy
+- type: StatusPage
+  url: https://tweetapi.com/status
+- type: Security
+  url: https://github.com/tweetapi/agent-skill/blob/main/SECURITY.md
+- type: Plans
+  url: plans/tweetapi-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/tweetapi-rate-limits.yml
+- type: Packages
+  url: packages/tweetapi-packages.yml
+- type: SDKs
+  url: packages/tweetapi-packages.yml
+- type: WellKnown
+  url: well-known/tweetapi-well-known.yml
+- type: LLMsTxt
+  url: llms/tweetapi-llms.txt
+- type: MCPServer
+  url: mcp/tweetapi-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Authentication
+  url: authentication/tweetapi-authentication.yml
+- type: OAuthScopes
+  url: scopes/tweetapi-scopes.yml
+- type: Conventions
+  url: conventions/tweetapi-conventions.yml
+- type: ErrorCatalog
+  url: errors/tweetapi-problem-types.yml
+- type: DataModel
+  url: data-model/tweetapi-data-model.yml
+- type: Lifecycle
+  url: lifecycle/tweetapi-lifecycle.yml
+- type: Conformance
+  url: conformance/tweetapi-conformance.yml
+- type: VulnerabilityDisclosure
+  url: security/tweetapi-vulnerability-disclosure.yml
+x-enrichment:
+  date: '2026-08-11'
+  status: enriched
+  artifacts_added: 23
+  pass: local-v1

@@ -1,0 +1,94 @@
+generated: '2026-08-11'
+method: derived
+source: llms/tweetapi-ai-docs-v2.txt
+source_url: https://tweetapi.com/ai-docs-v2.txt
+note: >-
+  Derived from the provider's published endpoint catalog (76 endpoints, generated 2026-07-29), not
+  from an OpenAPI — TweetAPI publishes none, so there are no component schemas or $refs to walk.
+  Entities and relationships below are inferred from endpoint paths, required identifier parameters
+  and the documented shared Tweet-object notes. Field-level shapes are NOT modelled here because the
+  provider does not publish response schemas; only identifier relationships that appear as real
+  request parameters are recorded.
+identifiers:
+  style: string snowflake ids
+  note: All ids are strings (Twitter/X snowflake), timestamps are ISO 8601, cursors are opaque strings.
+entities:
+  - name: User
+    key: userId
+    alternate_keys: [username]
+    endpoints: 16
+    operations:
+      - GET /tw-v2/user/by-username
+      - GET /tw-v2/user/by-usernames
+      - GET /tw-v2/user/by-id
+      - GET /tw-v2/user/by-ids
+      - GET /tw-v2/user/about-account
+    note: Batch lookups accept up to 50 usernames or ids.
+  - name: Tweet
+    key: tweetId
+    endpoints: 5
+    operations:
+      - GET /tw-v2/tweet/details
+      - GET /tw-v2/tweet/details-by-ids
+      - GET /tw-v2/tweet/retweets
+      - GET /tw-v2/tweet/quotes
+      - POST /tw-v2/tweet/translate
+    variants:
+      - {type: quote, note: 'a reaction post is returned as a quote with reactionContext.isReaction true'}
+    fields_documented: [reactionContext.isReaction, reactionContext.targetTweetId, reactionContext.targetTweetUrl, reactionContext.targetAuthor]
+  - name: List
+    key: listId
+    endpoints: 7
+    operations: [GET /tw-v2/list/details, GET /tw-v2/list/tweets, GET /tw-v2/list/members, GET /tw-v2/list/followers, POST /tw-v2/list/create, POST /tw-v2/list/add-member, POST /tw-v2/list/remove-member]
+  - name: Community
+    key: communityId
+    endpoints: 12
+    operations: [GET /tw-v2/community/details, GET /tw-v2/community/tweets, GET /tw-v2/community/members, GET /tw-v2/community/search]
+  - name: Space
+    key: spaceId
+    endpoints: 2
+    operations: [GET /tw-v2/space/by-id, GET /tw-v2/space/stream-url]
+    note: stream-url is keyed by mediaKey rather than spaceId.
+  - name: Conversation
+    key: conversationId
+    endpoints: 13
+    note: >-
+      Two distinct DM systems share this entity — X Chat (encrypted, /tw-v2/xchat/*) and the legacy
+      unencrypted DM surface (/tw-v2/interaction/inbox-*, conversation, send-dm). 1-on-1 ids take the
+      composite form 'userId1-userId2'; group conversations use a single id.
+  - name: Profile
+    key: authToken
+    endpoints: 3
+    operations: [POST /tw-v2/profile/update, POST /tw-v2/profile/avatar, POST /tw-v2/profile/banner]
+    note: The acting account is identified by the supplied session token, not by an id parameter.
+  - name: Notification
+    key: null
+    endpoints: 1
+    operations: [GET /tw-v2/interaction/notifications]
+relationships:
+  - {from: User, to: Tweet, type: has_many, via: userId, evidence: 'GET /tw-v2/user/tweets, /tw-v2/user/tweets-and-replies'}
+  - {from: User, to: User, type: has_many, via: userId, role: followers, evidence: 'GET /tw-v2/user/followers, followers-list, followers-ids, verified-followers'}
+  - {from: User, to: User, type: has_many, via: userId, role: following, evidence: 'GET /tw-v2/user/following, following-list, following-ids'}
+  - {from: User, to: User, type: has_one, via: 'subjectId + targetId', role: friendship, evidence: 'GET /tw-v2/user/friendship'}
+  - {from: User, to: List, type: has_many, via: userId, role: subscriptions, evidence: 'GET /tw-v2/user/subscriptions'}
+  - {from: Tweet, to: Tweet, type: has_many, via: tweetId, role: retweets, evidence: 'GET /tw-v2/tweet/retweets'}
+  - {from: Tweet, to: Tweet, type: has_many, via: tweetId, role: quotes, evidence: 'GET /tw-v2/tweet/quotes'}
+  - {from: Tweet, to: Tweet, type: belongs_to, via: reactionContext.targetTweetId, role: reaction_target, evidence: 'shared Tweet object notes'}
+  - {from: Tweet, to: User, type: belongs_to, via: reactionContext.targetAuthor, evidence: 'shared Tweet object notes'}
+  - {from: List, to: User, type: has_many, via: listId, role: members, evidence: 'GET /tw-v2/list/members, POST /tw-v2/list/add-member'}
+  - {from: List, to: User, type: has_many, via: listId, role: followers, evidence: 'GET /tw-v2/list/followers'}
+  - {from: List, to: Tweet, type: has_many, via: listId, evidence: 'GET /tw-v2/list/tweets'}
+  - {from: Community, to: Tweet, type: has_many, via: communityId, evidence: 'GET /tw-v2/community/tweets'}
+  - {from: Community, to: User, type: has_many, via: communityId, role: members, evidence: 'GET /tw-v2/community/members'}
+  - {from: Tweet, to: Community, type: belongs_to, via: communityId, evidence: 'POST /tw-v2/interaction/create-community-post, reply-community-post'}
+  - {from: Space, to: Space, type: has_one, via: mediaKey, role: stream, evidence: 'GET /tw-v2/space/stream-url'}
+  - {from: Conversation, to: User, type: has_many, via: 'conversationId composite userId1-userId2', evidence: 'GET /tw-v2/interaction/conversation'}
+  - {from: Conversation, to: User, type: has_many, via: recipientId, role: recipients, evidence: 'POST /tw-v2/xchat/send, GET /tw-v2/interaction/dm-permissions'}
+collections:
+  paginated: 27
+  cursor_param: cursor
+  note: See conventions/tweetapi-conventions.yml for pagination semantics.
+gaps:
+  - No response schemas published, so no attribute-level model can be derived without fabrication
+  - No id prefixes or type discriminators (ids are raw upstream snowflakes, indistinguishable across entities)
+  - No JSON Schema, no components, no examples payloads beyond the reactionContext fragment

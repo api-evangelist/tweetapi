@@ -1,0 +1,91 @@
+generated: '2026-08-11'
+method: searched
+source: https://tweetapi.com/.well-known/oauth-authorization-server
+corroborating_sources:
+  - https://mcp.tweetapi.com/.well-known/oauth-protected-resource/mcp
+  - https://tweetapi.com/docs/getting-started/overview
+  - https://tweetapi.com/ai-docs-v2.txt
+note: >-
+  TweetAPI publishes no OpenAPI, so nothing here is derived from a spec. Every assertion below was
+  probed live or read from the provider's own documentation, and the negatives are as load-bearing
+  as the positives.
+standards:
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      RFC 6749 authorization_code + refresh_token grants advertised at
+      https://tweetapi.com/.well-known/oauth-authorization-server (probed 200, 2026-08-11).
+  - id: rfc8414-oauth-authorization-server-metadata
+    conforms: true
+    evidence: /.well-known/oauth-authorization-server served on tweetapi.com with issuer, authorization, token, revocation and registration endpoints.
+  - id: rfc9728-oauth-protected-resource-metadata
+    conforms: true
+    evidence: >-
+      /.well-known/oauth-protected-resource/mcp served on mcp.tweetapi.com declaring resource,
+      authorization_servers, bearer_methods_supported and scopes_supported; advertised by the
+      WWW-Authenticate challenge on the MCP endpoint.
+  - id: rfc7636-pkce
+    conforms: true
+    evidence: code_challenge_methods_supported ["S256"].
+  - id: rfc7591-dynamic-client-registration
+    conforms: true
+    evidence: registration_endpoint https://tweetapi.com/api/oauth/register advertised.
+  - id: rfc8707-resource-indicators
+    conforms: true
+    evidence: resource_indicators_supported true.
+  - id: mcp
+    conforms: true
+    evidence: >-
+      Hosted remote HTTP (streamable_http) MCP server at https://mcp.tweetapi.com/mcp returning
+      JSON-RPC 2.0 error envelopes; documented for Codex, Claude Code and Cursor. tools/list is
+      OAuth-gated so protocol revision could not be read anonymously.
+  - id: oidc
+    conforms: false
+    evidence: /.well-known/openid-configuration 404 on all three hosts; no id_token, no OIDC scopes.
+  - id: openapi
+    conforms: false
+    evidence: >-
+      No OpenAPI at any probed location on tweetapi.com, api.tweetapi.com or mcp.tweetapi.com. The
+      provider's own agent-skill sources reference states "The current public index does not
+      advertise a public OpenAPI specification or public Postman collection."
+  - id: asyncapi
+    conforms: false
+    evidence: No event, streaming or webhook surface exists; DM updates are cursor polling.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: Errors are {"statusCode","message"} served as application/json, not application/problem+json.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt 404 on all three hosts.
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: No Sunset or Deprecation header support and no deprecation policy published.
+  - id: rfc9331-ratelimit-headers
+    conforms: false
+    evidence: >-
+      Provider states explicitly that tw-v2 endpoints do not return Retry-After or X-RateLimit-*
+      headers.
+  - id: idempotency-key
+    conforms: false
+    evidence: No idempotency key or retry-safety contract on any write endpoint.
+  - id: cursor-pagination
+    conforms: true
+    evidence: Opaque cursor parameter and cursor response field across 27 collection endpoints.
+  - id: a2a
+    conforms: false
+    evidence: /.well-known/agent-card.json and /.well-known/agent.json both 404 on all three hosts.
+  - id: llms-txt
+    conforms: true
+    evidence: https://tweetapi.com/llms.txt served 200 as text/plain, plus a companion ai-docs-v2.txt endpoint catalog.
+compliance_program:
+  published: false
+  certifications: []
+  note: >-
+    No SOC 2, ISO 27001, PCI DSS, HIPAA, FedRAMP or GDPR certification claim, no trust center, and no
+    compliance page. Nothing here justifies a type Compliance pointer. Data-protection posture is
+    limited to the privacy policy at https://tweetapi.com/privacy.
+regulatory_context:
+  note: >-
+    Not a regulated-sector API, but the provider operates a third-party data surface over Twitter/X
+    and states it is not affiliated with, endorsed by or sponsored by X Corp. The terms place
+    compliance with applicable laws, platform policies and privacy requirements on the customer.

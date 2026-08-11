@@ -1,0 +1,125 @@
+# TweetAPI - Third-Party Twitter Data API
+
+Last updated: 2026-07-28
+
+TweetAPI is an independent third-party API for public Twitter data. It is built
+for developers, researchers, startups, agencies, and analytics teams that need
+documented API access without creating an X developer app for the TweetAPI flow.
+
+TweetAPI is not affiliated with, endorsed by, or sponsored by X Corp.
+
+## Sources of Truth
+
+- Public endpoint definitions and examples: `src/api-spec/v2` in the TweetAPI
+  dashboard repository.
+- Complete generated endpoint catalog: https://tweetapi.com/ai-docs-v2.txt
+- Customer-facing endpoint reference: https://tweetapi.com/docs/getting-started/overview
+- Public pricing and plan limits: https://tweetapi.com/pricing
+- MCP setup and boundaries: https://tweetapi.com/docs/getting-started/agents
+
+This file summarizes product-level facts. It does not duplicate the complete
+endpoint catalog in `ai-docs-v2.txt`.
+
+## Canonical Public Pages
+
+- Website: https://tweetapi.com
+- Pricing: https://tweetapi.com/pricing
+- Twitter API MCP server: https://tweetapi.com/mcp
+- API documentation: https://tweetapi.com/docs/getting-started/overview
+- Agents and MCP guide: https://tweetapi.com/docs/getting-started/agents
+- Tweet ID to Date Converter: https://tweetapi.com/tools/twitter-timestamp-converter
+- AI-ready API docs: https://tweetapi.com/ai-docs-v2.txt
+- Signup: https://tweetapi.com/auth/signup
+- Support: https://t.me/tweetapi
+
+## Public Pricing
+
+- Free: $0 for 100 one-time requests at 10 requests per minute. No credit card
+  required.
+- Pro: $17 per month for 100,000 requests at 60 requests per minute.
+- Ultra: $57 per month for 500,000 requests at 120 requests per minute.
+- Mega: $197 per month for 2,000,000 requests at 180 requests per minute.
+
+Public paid plans include access to all public endpoint categories. Private,
+legacy, or custom plans can differ from the public plan set.
+
+## Payment Methods
+
+- Credit and debit cards through Stripe. Card subscriptions auto-renew.
+- Cryptocurrency through NOWPayments. Crypto subscriptions use manual renewal.
+
+## API Access
+
+- Base API URL: https://api.tweetapi.com/tw-v2
+- Authentication: `X-API-Key` request header.
+- Response format: JSON.
+- Pagination: cursor-based on endpoints that return paginated collections.
+- A `429` response can indicate request-allowance exhaustion or a per-minute
+  limit. Inspect the error message before retrying.
+- TweetAPI `tw-v2` endpoints do not currently return `Retry-After` or
+  `X-RateLimit-*` headers. Use bounded backoff and lower concurrency for
+  transient per-minute limits.
+
+## Endpoint Scope
+
+The generated API catalog covers public-data and supported account-authorized
+workflows across users, posts, search, followers, lists, communities, Spaces,
+posting, engagement, profiles, X Chat, and legacy DM operations. Consult
+https://tweetapi.com/ai-docs-v2.txt for the current endpoint list and parameters.
+
+## SDKs and Examples
+
+- TweetAPI maintains Python and Node.js/TypeScript SDKs.
+- Public endpoint docs include cURL, JavaScript, and Python examples.
+- Developers can also call the REST API directly from other languages.
+- Native fetch tutorial: https://tweetapi.com/blog/twitter-api-nodejs
+- Python and TypeScript SDK guide:
+  https://tweetapi.com/blog/twitter-api-python-nodejs-sdk
+
+## Hosted MCP for AI Agents
+
+- Public product page: https://tweetapi.com/mcp
+- Hosted remote HTTP MCP URL: https://mcp.tweetapi.com/mcp
+- Setup guide: https://tweetapi.com/docs/getting-started/agents
+- Existing-user dashboard flow: https://tweetapi.com/dashboard/mcp
+
+Requirements:
+
+- A TweetAPI account.
+- An active TweetAPI API key selected during dashboard authorization.
+- An agent client with remote HTTP MCP and OAuth support.
+
+Boundaries:
+
+- Hosted MCP provides current TweetAPI docs and read-only live public-data tools.
+- Live MCP calls consume the normal quota of the selected TweetAPI API key.
+- Dashboard authorization keeps the API key behind the TweetAPI OAuth boundary.
+- Do not paste TweetAPI API keys, X account tokens, proxy credentials, or private
+  message content into agent prompts.
+- Use normal server-side REST or SDK code when integrating TweetAPI into an
+  application, background job, or data pipeline.
+
+## Trial and Dashboard
+
+- New users can start with 100 free trial requests at
+  https://tweetapi.com/auth/signup.
+- No credit card is required for the trial.
+- The customer dashboard supports API key management, subscription status,
+  billing, usage monitoring, documentation, and MCP connections.
+
+## Free Developer Tool
+
+- The Tweet ID to Date Converter decodes the timestamp in a modern Twitter
+  Snowflake ID, accepts normal x.com and twitter.com status URLs, and reports
+  legacy pre-Snowflake IDs without guessing a date.
+- It can turn a date and time into inclusive Snowflake boundary IDs and
+  ready-to-copy filters for TweetAPI `GET /tw-v2/search`.
+- Batch conversion accepts up to 100 Tweet IDs or status URLs and exports CSV
+  locally. Inputs are processed in the browser without signup.
+
+## Responsible Use
+
+- TweetAPI is intended for legitimate research, analytics, monitoring, business
+  intelligence, and developer workflows.
+- Users are responsible for complying with applicable laws, platform policies,
+  privacy requirements, provider terms, and TweetAPI terms.

@@ -1,0 +1,1 @@
+{"resource":"https://mcp.tweetapi.com/mcp","authorization_servers":["https://tweetapi.com"],"bearer_methods_supported":["header"],"scopes_supported":["tweetapi:read","offline_access"]}

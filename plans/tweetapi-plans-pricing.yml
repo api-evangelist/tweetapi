@@ -1,0 +1,62 @@
+generated: '2026-08-11'
+method: searched
+source: https://tweetapi.com/pricing
+corroborating_source: https://tweetapi.com/llms.txt
+currency: USD
+plan_count: 4
+model: prepaid request allowance per billing period, per-minute rate ceiling attached to the tier
+plans:
+  - name: Free
+    price: 0
+    currency: USD
+    billing_period: one-time
+    included_quota: 100 requests (one-time trial credit, not monthly)
+    rate_limit: 10 requests/minute
+    credit_card_required: false
+    features:
+      - All public endpoint categories
+    signup: https://tweetapi.com/auth/signup
+  - name: Pro
+    price: 17
+    currency: USD
+    billing_period: month
+    included_quota: 100000 requests/month
+    rate_limit: 60 requests/minute
+    features:
+      - All public endpoint categories
+      - Priority support
+    marketing_label: Most Popular
+  - name: Ultra
+    price: 57
+    currency: USD
+    billing_period: month
+    included_quota: 500000 requests/month
+    rate_limit: 120 requests/minute
+    features:
+      - All public endpoint categories
+      - Priority support
+  - name: Mega
+    price: 197
+    currency: USD
+    billing_period: month
+    included_quota: 2000000 requests/month
+    rate_limit: 180 requests/minute
+    features:
+      - All public endpoint categories
+      - Priority support
+      - Early endpoint access
+overage:
+  policy: not-published
+  note: >-
+    No overage or burst-credit policy is published. Exhausting the plan allowance surfaces as HTTP
+    429, sharing a status code with the per-minute ceiling, so the error message is the only way a
+    caller can tell allowance exhaustion from a transient rate limit.
+payment_methods:
+  - {method: card, processor: Stripe, renewal: automatic}
+  - {method: cryptocurrency, processor: NOWPayments, renewal: manual}
+enterprise:
+  contact_only: true
+  note: >-
+    llms.txt states private, legacy and custom plans exist and can differ from the public plan set;
+    their terms are not published.
+commitment: No long-term commitment; monthly subscriptions.
