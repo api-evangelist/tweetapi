@@ -6,8 +6,21 @@ description: >-
 image: https://tweetapi.com/api/og?type=landing
 url: https://raw.githubusercontent.com/api-evangelist/tweetapi/refs/heads/main/apis.yml
 created: '2026-08-10'
-modified: '2026-08-11'
+modified: '2026-08-22'
 specificationVersion: '0.23'
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: true
+  try_now: true
+  public: false
+  label: Paid (free trial) · Self-serve signup
+  confidence: high
+  source:
+    - plans
+    - authentication
+  generated: '2026-08-22'
+  method: derived
 tags:
   - Twitter
   - X
@@ -119,12 +132,10 @@ apis:
       - rest-api
     properties:
       - type: MCPServer
-        url: https://mcp.tweetapi.com/mcp
+        name: TweetAPI Hosted MCP Server
+        url: mcp/tweetapi-mcp.yml
       - type: Documentation
         url: https://tweetapi.com/docs/getting-started/agents
-      - type: MCPServer
-        name: MCP server manifest
-        url: mcp/tweetapi-mcp.yml
       - type: OAuthScopes
         url: scopes/tweetapi-scopes.yml
       - type: AgentSkill
@@ -139,6 +150,8 @@ generated:
   confidence: 95
   at: '2026-08-10T15:07:31.972Z'
 common:
+- type: Website
+  url: https://tweetapi.com
 - type: DomainSecurity
   url: security/tweetapi-domain-security.yml
 - type: DeveloperPortal
