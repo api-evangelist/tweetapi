@@ -4,7 +4,7 @@ description: >-
   analytics teams. Offers user profiles, tweets, search, lists, communities, Spaces, posting/engagement, and DMs, plus a
   hosted MCP server and llms.txt for agent access. Not affiliated with X Corp.
 image: https://tweetapi.com/api/og?type=landing
-url: https://tweetapi.apievangelist.com/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/tweetapi/refs/heads/main/apis.yml
 created: '2026-08-10'
 modified: '2026-08-11'
 specificationVersion: '0.21'
