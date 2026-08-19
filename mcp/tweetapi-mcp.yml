@@ -8,52 +8,68 @@ server:
   url: https://mcp.tweetapi.com/mcp
   protocol: MCP remote HTTP (streamable_http)
   docs:
-    - https://tweetapi.com/mcp
-    - https://tweetapi.com/docs/getting-started/agents
-    - https://github.com/tweetapi/agent-skill/blob/main/skills/tweetapi/references/hosted-mcp.md
+  - https://tweetapi.com/mcp
+  - https://tweetapi.com/docs/getting-started/agents
+  - https://github.com/tweetapi/agent-skill/blob/main/skills/tweetapi/references/hosted-mcp.md
 authorization:
   scheme: oauth2
   gated: true
   authorization_server: https://tweetapi.com
   protected_resource_metadata: https://mcp.tweetapi.com/.well-known/oauth-protected-resource/mcp
-  scopes: [tweetapi:read, offline_access]
+  scopes:
+  - tweetapi:read
+  - offline_access
   flow: authorization_code
   pkce: S256
   dynamic_client_registration: https://tweetapi.com/api/oauth/register
-  note: >-
-    Dashboard authorization binds a selected TweetAPI API key to the OAuth grant so the key never
+  note: Dashboard authorization binds a selected TweetAPI API key to the OAuth grant so the key never
     enters the agent conversation. Live MCP calls consume that key's normal request quota.
 tools:
   status: gated
   count: null
-  note: >-
-    POST {"jsonrpc":"2.0","id":1,"method":"tools/list"} to https://mcp.tweetapi.com/mcp returned
+  note: 'POST {"jsonrpc":"2.0","id":1,"method":"tools/list"} to https://mcp.tweetapi.com/mcp returned
     HTTP 401 with WWW-Authenticate: Bearer resource_metadata=".../.well-known/oauth-protected-resource/mcp",
-    error="invalid_token" and body {"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization
-    bearer token is required."}}. The same challenge is returned for initialize. The provider does
-    not publish tool names anywhere public — /mcp, the agents guide and the official agent-skill repo
-    all describe the server by capability class only. No tool list is recorded here rather than a
-    guessed one; enumerating it requires an authenticated tools/list after the OAuth flow.
+    error="invalid_token" and body {"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization bearer
+    token is required."}}. The same challenge is returned for initialize. The provider does not publish
+    tool names anywhere public — /mcp, the agents guide and the official agent-skill repo all describe
+    the server by capability class only. No tool list is recorded here rather than a guessed one; enumerating
+    it requires an authenticated tools/list after the OAuth flow.'
 capabilities_documented:
-  - Current TweetAPI documentation inside the agent
-  - Read-only live public-data lookups
+- Current TweetAPI documentation inside the agent
+- Read-only live public-data lookups
 boundaries:
-  - No posting or engagement operations
-  - No account-secret operations (authToken, ct0, proxy credentials, passwords)
-  - No direct-message or X Chat operations
-  - No billing, API-key management or administration operations
+- No posting or engagement operations
+- No account-secret operations (authToken, ct0, proxy credentials, passwords)
+- No direct-message or X Chat operations
+- No billing, API-key management or administration operations
 clients_documented:
-  - {client: Codex CLI, install: "codex mcp add tweetapi --url https://mcp.tweetapi.com/mcp"}
-  - {client: Claude Code, install: "claude mcp add --transport http --scope user tweetapi https://mcp.tweetapi.com/mcp"}
-  - {client: Cursor, install: 'mcpServers.tweetapi.url = https://mcp.tweetapi.com/mcp'}
+- client: Codex CLI
+  install: codex mcp add tweetapi --url https://mcp.tweetapi.com/mcp
+- client: Claude Code
+  install: claude mcp add --transport http --scope user tweetapi https://mcp.tweetapi.com/mcp
+- client: Cursor
+  install: mcpServers.tweetapi.url = https://mcp.tweetapi.com/mcp
 x-evidence:
-  - {url: 'https://mcp.tweetapi.com/mcp', method: POST, http_status: 401, fetched: '2026-08-11'}
-  - {url: 'https://mcp.tweetapi.com/.well-known/oauth-protected-resource/mcp', http_status: 200, fetched: '2026-08-11'}
-  - {url: 'https://tweetapi.com/.well-known/oauth-authorization-server', http_status: 200, fetched: '2026-08-11'}
+- url: https://mcp.tweetapi.com/mcp
+  method: POST
+  http_status: 401
+  fetched: '2026-08-11'
+- url: https://mcp.tweetapi.com/.well-known/oauth-protected-resource/mcp
+  http_status: 200
+  fetched: '2026-08-11'
+- url: https://tweetapi.com/.well-known/oauth-authorization-server
+  http_status: 200
+  fetched: '2026-08-11'
 crosswalk:
   emitted: false
-  reason: >-
-    A tool crosswalk binds MCP tools to backing OpenAPI operationIds. TweetAPI publishes no public
+  reason: A tool crosswalk binds MCP tools to backing OpenAPI operationIds. TweetAPI publishes no public
     OpenAPI (confirmed by the provider's own agent-skill sources reference) and its MCP tools/list is
-    auth-gated, so neither side of the mapping exists publicly. Emitting one would require inventing
-    both halves.
+    auth-gated, so neither side of the mapping exists publicly. Emitting one would require inventing both
+    halves.
+deployment:
+  mode: remote
+  endpoint: https://mcp.tweetapi.com/mcp
+  verified: probed
+  probe: gated
+  checked: '2026-08-12'
+  source: catalog MCP census
