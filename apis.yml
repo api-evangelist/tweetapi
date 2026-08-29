@@ -3,6 +3,17 @@ description: >-
   Independent third-party REST API for public Twitter/X data, built for developers, researchers, startups, agencies, and
   analytics teams. Offers user profiles, tweets, search, lists, communities, Spaces, posting/engagement, and DMs, plus a
   hosted MCP server and llms.txt for agent access. Not affiliated with X Corp.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://tweetapi.com/api/og?type=landing
 url: https://raw.githubusercontent.com/api-evangelist/tweetapi/refs/heads/main/apis.yml
 created: '2026-08-10'
