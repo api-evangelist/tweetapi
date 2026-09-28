@@ -11,7 +11,7 @@ server:
   - https://tweetapi.com/mcp
   - https://tweetapi.com/docs/getting-started/agents
   - https://github.com/tweetapi/agent-skill/blob/main/skills/tweetapi/references/hosted-mcp.md
-authorization:
+auth:
   scheme: oauth2
   gated: true
   authorization_server: https://tweetapi.com
@@ -24,16 +24,7 @@ authorization:
   dynamic_client_registration: https://tweetapi.com/api/oauth/register
   note: Dashboard authorization binds a selected TweetAPI API key to the OAuth grant so the key never
     enters the agent conversation. Live MCP calls consume that key's normal request quota.
-tools:
-  status: gated
-  count: null
-  note: 'POST {"jsonrpc":"2.0","id":1,"method":"tools/list"} to https://mcp.tweetapi.com/mcp returned
-    HTTP 401 with WWW-Authenticate: Bearer resource_metadata=".../.well-known/oauth-protected-resource/mcp",
-    error="invalid_token" and body {"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization bearer
-    token is required."}}. The same challenge is returned for initialize. The provider does not publish
-    tool names anywhere public — /mcp, the agents guide and the official agent-skill repo all describe
-    the server by capability class only. No tool list is recorded here rather than a guessed one; enumerating
-    it requires an authenticated tools/list after the OAuth flow.'
+tools: []
 capabilities_documented:
 - Current TweetAPI documentation inside the agent
 - Read-only live public-data lookups

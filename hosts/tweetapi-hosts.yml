@@ -1,0 +1,110 @@
+generated: '2026-09-28'
+method: derived
+source: the pre-flight dossier, apis.yml pointers, spec servers, well-known, vendors -- nothing fetched here
+generator: derive-hosts.py
+summary:
+  hosts: 7
+  own: 4
+  other_domain: 2
+  platform: 1
+  roles:
+  - api
+  - other
+  - portal
+  - source
+  - support
+  - website
+hosts:
+- host: api.t.me
+  found_by:
+  - contract-discovery
+  types: []
+  serves: []
+  registrable_domain: t.me
+  role: api
+  relation: other-domain
+- host: api.tweetapi.com
+  found_by:
+  - apis[]
+  - probed
+  - site-links
+  - contract-discovery
+  - well-known
+  types: []
+  serves:
+  - api
+  registrable_domain: tweetapi.com
+  role: api
+  relation: own
+- host: github.com
+  found_by:
+  - pointer
+  types:
+  - GitHubOrganization
+  - Security
+  serves: []
+  registrable_domain: github.com
+  role: source
+  relation: platform
+- host: mcp.tweetapi.com
+  found_by:
+  - apis[]
+  - probed
+  - contract-discovery
+  - well-known
+  types: []
+  serves:
+  - api
+  registrable_domain: tweetapi.com
+  role: other
+  relation: own
+- host: t.me
+  found_by:
+  - pointer
+  - probed
+  - contract-discovery
+  - well-known
+  types:
+  - Support
+  serves: []
+  registrable_domain: t.me
+  role: support
+  relation: other-domain
+- host: tweetapi.com
+  found_by:
+  - pointer
+  - apis[]
+  - probed
+  - site-links
+  - contract-discovery
+  - well-known
+  types:
+  - DeveloperPortal
+  - Documentation
+  - APIReference
+  - GettingStarted
+  - Blog
+  - Pricing
+  - SignUp
+  - TermsOfService
+  - PrivacyPolicy
+  - StatusPage
+  serves:
+  - docs
+  registrable_domain: tweetapi.com
+  role: portal
+  relation: own
+- host: www.tweetapi.com
+  found_by:
+  - pointer
+  - probed
+  - well-known
+  - vendor-detect
+  types:
+  - Website
+  serves:
+  - cdn
+  vendor: cloudflare
+  registrable_domain: tweetapi.com
+  role: website
+  relation: own

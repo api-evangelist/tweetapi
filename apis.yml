@@ -1,8 +1,9 @@
 name: TweetAPI
-description: >-
-  Independent third-party REST API for public Twitter/X data, built for developers, researchers, startups, agencies, and
-  analytics teams. Offers user profiles, tweets, search, lists, communities, Spaces, posting/engagement, and DMs, plus a
-  hosted MCP server and llms.txt for agent access. Not affiliated with X Corp.
+
+description: Independent third-party REST API for public Twitter/X data, built for developers, researchers, startups, agencies, and analytics
+  teams. Offers user profiles, tweets, search, lists, communities, Spaces, posting/engagement, and DMs, plus a hosted MCP server and llms.txt
+  for agent access. Not affiliated with X Corp.
+
 deliveryModel:
   model: saas
   open_source: false
@@ -14,6 +15,7 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+
 accessModel:
   pricing: freemium
   onboarding: self-serve
@@ -30,142 +32,55 @@ accessModel:
   - security
   generated: '2026-09-02'
   method: derived
+
 image: https://tweetapi.com/api/og?type=landing
+
 url: https://raw.githubusercontent.com/api-evangelist/tweetapi/refs/heads/main/apis.yml
+
 created: '2026-08-10'
+
 modified: '2026-08-11'
+
 specificationVersion: '0.23'
+
 tags:
-  - twitter
-  - X
-  - Social-Media
-  - Social Data
-  - Search
-  - Analytics
-  - Research
-  - Developer Tools
-  - MCP
-  - agent-native
-  - llms-txt
-  - REST API
+- twitter
+- X
+- Social-Media
+- Social Data
+- Search
+- Analytics
+- Research
+- Developer Tools
+- MCP
+- agent-native
+- llms-txt
+- REST API
+
 tags_raw:
-  - twitter
-  - x
-  - social-media
-  - social-data
-  - search
-  - analytics
-  - research
-  - developer-tools
-  - mcp
-  - agent-native
-  - llms-txt
-  - rest-api
-apis:
-  - name: TweetAPI tw-v2 REST API
-    description: >-
-      REST API for public Twitter/X data with X-API-Key auth, JSON responses, and 76 documented endpoints across users,
-      tweets, posting, interactions, lists, profiles, communities, Spaces, search, auth, X Chat, and legacy DMs.
-    humanURL: https://tweetapi.com/docs/getting-started/overview
-    baseURL: https://api.tweetapi.com/tw-v2
-    tags:
-      - twitter
-      - X
-      - Social-Media
-      - Social Data
-      - Search
-      - Analytics
-      - Research
-      - Developer Tools
-      - MCP
-      - agent-native
-      - llms-txt
-      - REST API
-    tags_raw:
-      - twitter
-      - x
-      - social-media
-      - social-data
-      - search
-      - analytics
-      - research
-      - developer-tools
-      - mcp
-      - agent-native
-      - llms-txt
-      - rest-api
-    properties:
-      - type: Documentation
-        url: https://tweetapi.com/docs/getting-started/overview
-      - type: LLMsTxt
-        url: https://tweetapi.com/llms.txt
-      - type: APIReference
-        url: https://tweetapi.com/ai-docs-v2.txt
-      - type: Authentication
-        url: authentication/tweetapi-authentication.yml
-      - type: RateLimits
-        url: rate-limits/tweetapi-rate-limits.yml
-      - type: ErrorCatalog
-        url: errors/tweetapi-problem-types.yml
-      - type: Conventions
-        url: conventions/tweetapi-conventions.yml
-      - type: DataModel
-        url: data-model/tweetapi-data-model.yml
-  - name: TweetAPI Hosted MCP Server
-    description: >-
-      Hosted remote HTTP MCP server providing current TweetAPI docs and read-only live public-data tools. Uses OAuth via
-      dashboard authorization (tweetapi:read); does not expose posting, engagement, account-secret, or DM operations.
-      Documented for Codex, Claude Code, and Cursor.
-    humanURL: https://tweetapi.com/mcp
-    baseURL: https://mcp.tweetapi.com/mcp
-    tags:
-      - twitter
-      - X
-      - Social-Media
-      - Social Data
-      - Search
-      - Analytics
-      - Research
-      - Developer Tools
-      - MCP
-      - agent-native
-      - llms-txt
-      - REST API
-    tags_raw:
-      - twitter
-      - x
-      - social-media
-      - social-data
-      - search
-      - analytics
-      - research
-      - developer-tools
-      - mcp
-      - agent-native
-      - llms-txt
-      - rest-api
-    properties:
-      - type: MCPServer
-        url: https://mcp.tweetapi.com/mcp
-      - type: Documentation
-        url: https://tweetapi.com/docs/getting-started/agents
-      - type: MCPServer
-        name: MCP server manifest
-        url: mcp/tweetapi-mcp.yml
-      - type: OAuthScopes
-        url: scopes/tweetapi-scopes.yml
-      - type: AgentSkill
-        url: skills/_index.yml
+- twitter
+- x
+- social-media
+- social-data
+- search
+- analytics
+- research
+- developer-tools
+- mcp
+- agent-native
+- llms-txt
+- rest-api
+
 maintainers:
-  - FN: TweetAPI
-    email: support@tweetapi.com
-    url: https://tweetapi.com
-generated:
-  by: apis.io/add
-  model: claude-opus-4-8
-  confidence: 95
-  at: '2026-08-10T15:07:31.972Z'
+- FN: TweetAPI
+  email: support@tweetapi.com
+  url: https://tweetapi.com
+
 common:
+- type: Hosts
+  url: hosts/tweetapi-hosts.yml
+- type: Vendors
+  url: vendors/tweetapi-vendors.yml
 - type: Website
   url: https://www.tweetapi.com/
 - type: DomainSecurity
@@ -228,17 +143,130 @@ common:
   url: conformance/tweetapi-conformance.yml
 - type: VulnerabilityDisclosure
   url: security/tweetapi-vulnerability-disclosure.yml
-x-enrichment:
-  date: '2026-08-11'
-  status: enriched
-  artifacts_added: 23
-  pass: local-v1
+
+apis:
+- name: TweetAPI tw-v2 REST API
+  description: REST API for public Twitter/X data with X-API-Key auth, JSON responses, and 76 documented endpoints across users, tweets, posting,
+    interactions, lists, profiles, communities, Spaces, search, auth, X Chat, and legacy DMs.
+  humanURL: https://tweetapi.com/docs/getting-started/overview
+  baseURL: https://api.tweetapi.com/tw-v2
+  tags:
+  - twitter
+  - X
+  - Social-Media
+  - Social Data
+  - Search
+  - Analytics
+  - Research
+  - Developer Tools
+  - MCP
+  - agent-native
+  - llms-txt
+  - REST API
+  tags_raw:
+  - twitter
+  - x
+  - social-media
+  - social-data
+  - search
+  - analytics
+  - research
+  - developer-tools
+  - mcp
+  - agent-native
+  - llms-txt
+  - rest-api
+  properties:
+  - type: Documentation
+    url: https://tweetapi.com/docs/getting-started/overview
+  - type: LLMsTxt
+    url: https://tweetapi.com/llms.txt
+  - type: APIReference
+    url: https://tweetapi.com/ai-docs-v2.txt
+  - type: Authentication
+    url: authentication/tweetapi-authentication.yml
+  - type: RateLimits
+    url: rate-limits/tweetapi-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/tweetapi-problem-types.yml
+  - type: Conventions
+    url: conventions/tweetapi-conventions.yml
+  - type: DataModel
+    url: data-model/tweetapi-data-model.yml
+  aid: tweetapi:tweetapi-tw-v2-rest-api
+- name: TweetAPI Hosted MCP Server
+  description: Hosted remote HTTP MCP server providing current TweetAPI docs and read-only live public-data tools. Uses OAuth via dashboard authorization
+    (tweetapi:read); does not expose posting, engagement, account-secret, or DM operations. Documented for Codex, Claude Code, and Cursor.
+  humanURL: https://tweetapi.com/mcp
+  baseURL: https://mcp.tweetapi.com/mcp
+  tags:
+  - twitter
+  - X
+  - Social-Media
+  - Social Data
+  - Search
+  - Analytics
+  - Research
+  - Developer Tools
+  - MCP
+  - agent-native
+  - llms-txt
+  - REST API
+  tags_raw:
+  - twitter
+  - x
+  - social-media
+  - social-data
+  - search
+  - analytics
+  - research
+  - developer-tools
+  - mcp
+  - agent-native
+  - llms-txt
+  - rest-api
+  properties:
+  - type: MCPServer
+    url: https://mcp.tweetapi.com/mcp
+  - type: Documentation
+    url: https://tweetapi.com/docs/getting-started/agents
+  - type: MCPServer
+    name: MCP server manifest
+    url: mcp/tweetapi-mcp.yml
+  - type: OAuthScopes
+    url: scopes/tweetapi-scopes.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  aid: tweetapi:tweetapi-hosted-mcp-server
+
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 95
+  at: '2026-08-10T15:07:31.972Z'
+
 x-correction-request:
   requested: '2026-09-28'
   source:
   - https://github.com/api-evangelist/tweetapi/pull/1
-  request: 'Provider PR #1 (restocked, tweetapi org member, 2026-08-12), verified live 2026-09-28: the pricing page
-    offers a free trial ($0, 100 one-time API units, no card), so accessModel trial is true. Website is https://tweetapi.com/
-    (www redirects). Keep the live MCP endpoint https://mcp.tweetapi.com/mcp (401 with resource_metadata = OAuth-protected,
-    correct) as the API''s MCPServer; remove only the duplicate MCPServer that points at the mcp/ manifest (it is
-    already under common).'
+  request: 'Provider PR #1 (restocked, tweetapi org member, 2026-08-12), verified live 2026-09-28: the pricing page offers a free trial ($0, 100
+    one-time API units, no card), so accessModel trial is true. Website is https://tweetapi.com/ (www redirects). Keep the live MCP endpoint https://mcp.tweetapi.com/mcp
+    (401 with resource_metadata = OAuth-protected, correct) as the API''s MCPServer; remove only the duplicate MCPServer that points at the mcp/
+    manifest (it is already under common).'
+
+x-coverage:
+  state: gated
+  reason: partner-login
+  method: derived
+  generated: '2026-09-28'
+  generator: derive-coverage.py (pre-flight evidence)
+  detail: the company serves an API surface but requires credentials before any description of it can be read
+  evidence:
+  - url: https://mcp.tweetapi.com/mcp
+    status: 401
+x-enrichment:
+  date: '2026-09-28'
+  status: enriched
+  artifacts_added: 3
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local

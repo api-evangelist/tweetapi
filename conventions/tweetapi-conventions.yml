@@ -11,6 +11,7 @@ authentication:
   scoped: false
   see_also: authentication/tweetapi-authentication.yml
 idempotency:
+  coverage: none
   supported: false
   header: null
   note: >-
