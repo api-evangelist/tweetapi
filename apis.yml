@@ -233,3 +233,12 @@ x-enrichment:
   status: enriched
   artifacts_added: 23
   pass: local-v1
+x-correction-request:
+  requested: '2026-09-28'
+  source:
+  - https://github.com/api-evangelist/tweetapi/pull/1
+  request: 'Provider PR #1 (restocked, tweetapi org member, 2026-08-12), verified live 2026-09-28: the pricing page
+    offers a free trial ($0, 100 one-time API units, no card), so accessModel trial is true. Website is https://tweetapi.com/
+    (www redirects). Keep the live MCP endpoint https://mcp.tweetapi.com/mcp (401 with resource_metadata = OAuth-protected,
+    correct) as the API''s MCPServer; remove only the duplicate MCPServer that points at the mcp/ manifest (it is
+    already under common).'
