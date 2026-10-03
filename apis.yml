@@ -19,10 +19,10 @@ deliveryModel:
 accessModel:
   pricing: freemium
   onboarding: self-serve
-  trial: false
+  trial: true
   try_now: true
   public: false
-  label: Freemium · Self-serve signup
+  label: Freemium (free trial) · Self-serve signup
   confidence: high
   source:
   - plans
@@ -30,7 +30,8 @@ accessModel:
   - scopes
   - rate-limits
   - security
-  generated: '2026-09-02'
+  - pricing
+  generated: '2026-10-03'
   method: derived
 
 image: https://tweetapi.com/api/og?type=landing
@@ -82,7 +83,7 @@ common:
 - type: Vendors
   url: vendors/tweetapi-vendors.yml
 - type: Website
-  url: https://www.tweetapi.com/
+  url: https://tweetapi.com/
 - type: DomainSecurity
   url: security/tweetapi-domain-security.yml
 - type: DeveloperPortal
@@ -230,9 +231,6 @@ apis:
     url: https://mcp.tweetapi.com/mcp
   - type: Documentation
     url: https://tweetapi.com/docs/getting-started/agents
-  - type: MCPServer
-    name: MCP server manifest
-    url: mcp/tweetapi-mcp.yml
   - type: OAuthScopes
     url: scopes/tweetapi-scopes.yml
   - type: AgentSkill
@@ -253,6 +251,8 @@ x-correction-request:
     one-time API units, no card), so accessModel trial is true. Website is https://tweetapi.com/ (www redirects). Keep the live MCP endpoint https://mcp.tweetapi.com/mcp
     (401 with resource_metadata = OAuth-protected, correct) as the API''s MCPServer; remove only the duplicate MCPServer that points at the mcp/
     manifest (it is already under common).'
+  applied: '2026-10-03'
+  applied_note: 'Applied by hand after a live check 2026-10-03: accessModel trial true (pricing page: Free, $0, 100 one-time API units, no card); Website https://tweetapi.com/ (www 301s there); duplicate manifest MCPServer removed from the MCP API, live https://mcp.tweetapi.com/mcp kept (401 + OAuth resource_metadata). Nothing withheld.'
 
 x-coverage:
   state: gated
