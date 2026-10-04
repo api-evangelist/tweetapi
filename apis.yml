@@ -47,6 +47,19 @@ specificationVersion: '0.23'
 tags:
 - twitter
 - X
+- Social Media
+- Social Data
+- Search
+- Analytics
+- Research
+- Developer Tools
+- MCP
+- Agent-Native
+- llms-txt
+- REST API
+tags_raw:
+- twitter
+- X
 - Social-Media
 - Social Data
 - Search
@@ -154,14 +167,14 @@ apis:
   tags:
   - twitter
   - X
-  - Social-Media
+  - Social Media
   - Social Data
   - Search
   - Analytics
   - Research
   - Developer Tools
   - MCP
-  - agent-native
+  - Agent-Native
   - llms-txt
   - REST API
   tags_raw:
@@ -203,14 +216,14 @@ apis:
   tags:
   - twitter
   - X
-  - Social-Media
+  - Social Media
   - Social Data
   - Search
   - Analytics
   - Research
   - Developer Tools
   - MCP
-  - agent-native
+  - Agent-Native
   - llms-txt
   - REST API
   tags_raw:
