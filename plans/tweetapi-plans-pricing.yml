@@ -63,3 +63,35 @@ enterprise:
     llms.txt states private, legacy and custom plans exist and can differ from the public plan set;
     their terms are not published.
 commitment: No long-term commitment; monthly subscriptions.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - subscription
+  units: []
+  plans:
+  - name: Free
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Pro
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Ultra
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Mega
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
