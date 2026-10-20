@@ -14,7 +14,7 @@ edges:
     registered_name: com.tweetapi/mcp
     register_id: com.tweetapi/mcp
     detected_by: sweep-agent-tools.py
-    detected: '2026-10-15'
+    detected: '2026-10-19'
   mcp_registry:
     servers:
     - com.tweetapi/mcp
@@ -50,7 +50,7 @@ edges:
       released_field: modified
       lapsed: false
       page: https://www.npmjs.com/package/tweetapi-node
-      repo_leg: github-org:tweetapi
+      repo_leg: domain:tweetapi.com
       publisher_leg: email:tweetapi.com
       matched_by: domain
     current: true
@@ -102,10 +102,10 @@ checked:
 - https://repo1.maven.org/maven2
 - https://rubygems.org/api/v1
 source:
-- https://api.nuget.org/v3
-- https://crates.io/api/v1
-- https://proxy.golang.org
-- https://pypi.org/pypi
 - https://registry.npmjs.org
-- https://repo1.maven.org/maven2
+- https://pypi.org/pypi
 - https://rubygems.org/api/v1
+- https://crates.io/api/v1
+- https://repo1.maven.org/maven2
+- https://api.nuget.org/v3
+- https://proxy.golang.org
