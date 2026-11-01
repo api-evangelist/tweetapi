@@ -1,4 +1,4 @@
-# tweetapi
+# TweetAPI
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,4 +64,125 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Independent third-party REST API for public Twitter/X data, built for developers, researchers, startups, agencies, and analytics teams. Offers user profiles, tweets, search, lists, communities, Spaces, posting/engagement, and DMs, plus a hosted MCP server and llms.txt for agent access. Not affiliate
+Independent third-party REST API for public Twitter/X data, built for developers, researchers, startups, agencies, and analytics teams. Offers user profiles, tweets, search, lists, communities, Spaces, posting/engagement, and DMs, plus a hosted MCP server and llms.txt for agent access. Not affiliated with X Corp.
+
+**Areas:** twitter · X · Social Media · Social Data · Search · Analytics · Research · Developer Tools · MCP · Agent-Native · llms-txt · REST API
+
+## TweetAPI on APIs.io
+
+Everything profiled for TweetAPI is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/tweetapi/](https://apis.io/providers/tweetapi/)** — or go straight to one of the APIs or properties below.
+
+### APIs (2)
+
+- [TweetAPI tw-v2 REST API](https://apis.io/apis/tweetapi/tweetapi-tw-v2-rest-api/) — REST API for public Twitter/X data with X-API-Key auth, JSON responses, and 76 documented endpoints across users, tweets, posting, interactions, lists,…
+- [TweetAPI Hosted MCP Server](https://apis.io/apis/tweetapi/tweetapi-hosted-mcp-server/) — Hosted remote HTTP MCP server providing current TweetAPI docs and read-only live public-data tools. Uses OAuth via dashboard authorization (tweetapi:read);…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (2)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Moved to /providers/tweetapi/](https://apis.io/servers/tweetapi/mcp/)
+- [tweetapi](https://apis.io/servers/tweetapi/tweetapi/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Tweetapi Authentication](https://apis.io/security/tweetapi/tweetapi-authentication/)
+- [Tweetapi Domain Security](https://apis.io/security/tweetapi/tweetapi-domain-security/)
+- [Tweetapi Vulnerability Disclosure](https://apis.io/security/tweetapi/tweetapi-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Tweetapi Scopes](https://apis.io/scopes/tweetapi/tweetapi-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Tweetapi Plans Pricing](https://apis.io/plans/tweetapi/tweetapi-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Tweetapi Rate Limits](https://apis.io/rate-limits/tweetapi/tweetapi-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://tweetapi.com/)
+- [Documentation](https://tweetapi.com/docs)
+- [Getting started](https://tweetapi.com/docs/getting-started/overview)
+- [API reference](https://tweetapi.com/ai-docs-v2.txt)
+- [Pricing](https://tweetapi.com/pricing)
+- [Sign up](https://tweetapi.com/auth/signup)
+- [Support](https://t.me/tweetapi)
+- [Blog](https://tweetapi.com/blog)
+- [Security](https://github.com/tweetapi/agent-skill/blob/main/SECURITY.md)
+- [Terms of service](https://tweetapi.com/terms)
+- [Privacy policy](https://tweetapi.com/privacy)
+- [GitHub](https://github.com/tweetapi)
+- [Status](https://tweetapi.com/status)
+
+## API Evangelist rating
+
+**Kin Score 50.9** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 60.5 |
+| Developer ergonomics | 71.4 |
+| Access clarity | 76.3 |
+
+**Agent readiness 36.3** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | yes |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 40.2** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/tweetapi/](https://apis.io/providers/tweetapi/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for TweetAPI: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/tweetapi/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
